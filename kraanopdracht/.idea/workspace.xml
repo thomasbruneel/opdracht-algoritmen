@@ -15,8 +15,8 @@
       <file leaf-file-name="Problem.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/be/kul/gantry/domain/Problem.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="631">
-              <caret line="305" column="55" lean-forward="false" selection-start-line="305" selection-start-column="55" selection-end-line="305" selection-end-column="55" />
+            <state relative-caret-position="442">
+              <caret line="300" column="41" lean-forward="false" selection-start-line="300" selection-start-column="41" selection-end-line="300" selection-end-column="41" />
               <folding>
                 <element signature="method#writeJsonFile#0;class#Problem#0" expanded="false" />
                 <element signature="method#fromJson#0;class#Problem#0" expanded="false" />
@@ -296,8 +296,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/be/kul/gantry/domain/Problem.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="631">
-          <caret line="305" column="55" lean-forward="false" selection-start-line="305" selection-start-column="55" selection-end-line="305" selection-end-column="55" />
+        <state relative-caret-position="442">
+          <caret line="300" column="41" lean-forward="false" selection-start-line="300" selection-start-column="41" selection-end-line="300" selection-end-column="41" />
           <folding>
             <element signature="method#writeJsonFile#0;class#Problem#0" expanded="false" />
             <element signature="method#fromJson#0;class#Problem#0" expanded="false" />
