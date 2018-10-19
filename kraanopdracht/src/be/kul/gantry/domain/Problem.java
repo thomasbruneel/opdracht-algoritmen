@@ -293,11 +293,16 @@ public class Problem {
                     outputJobList,
                     safetyDist,
                     pickupPlaceDuration);
-
         }
-
     }
 
-
-
+    @Override
+    public String toString() {
+        return "\nminX: " + minX
+                + "\nmaxX: " + maxX
+                + "\nminY: " + minY
+                + "\nmaxY: " + maxY
+                + "\nmaxLevels: " + maxLevels
+                + "\nsafetyDistance: " + safetyDistance;
+    }
 }
