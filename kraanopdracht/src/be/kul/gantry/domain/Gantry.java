@@ -9,6 +9,11 @@ public class Gantry {
     private final int xMin,xMax;
     private final int startX,startY;
     private final double xSpeed,ySpeed;
+    
+    //extra attributen toevoegen
+    private int xPosition;
+    private int yPostion;
+    private double time;
 
     public Gantry(int id,
                   int xMin, int xMax,
@@ -50,8 +55,32 @@ public class Gantry {
     public double getYSpeed() {
         return ySpeed;
     }
+    
+    public int getxPosition() {
+		return xPosition;
+	}
 
-    public boolean overlapsGantryArea(Gantry g) {
+	public void setxPosition(int xPosition) {
+		this.xPosition = xPosition;
+	}
+
+	public int getyPostion() {
+		return yPostion;
+	}
+
+	public void setyPostion(int yPostion) {
+		this.yPostion = yPostion;
+	}
+
+	public double getTime() {
+		return time;
+	}
+
+	public void setTime(double time) {
+		this.time = time;
+	}
+
+	public boolean overlapsGantryArea(Gantry g) {
         return g.xMin < xMax && xMin < g.xMax;
     }
 
