@@ -323,19 +323,22 @@ public class Problem {
         System.out.println(p.toString());
         
         ArrayList<Move>solution=p.solve();
+        
         BufferedWriter bw=new BufferedWriter(new FileWriter("output.csv"));
         bw.write("\"gID\";\"T\";\"x\";\"y\";\"itemsInCraneID\"");
+        /*
         for(Move m:solution){
         	bw.write("\n");
         	bw.write(m.toString());
         }
+        */
 
-        
+        bw.close();
         
     }
 
     public ArrayList<Move> solve() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
