@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -30,10 +31,12 @@ public class Problem {
     private final List<Slot> slots;
     private final int safetyDistance;
     private final int pickupPlaceDuration;
+    
+    private HashMap<Integer,Slot> itemToSlot;
 
     public Problem(int minX, int maxX, int minY, int maxY, int maxLevels,
                    List<Item> items, List<Gantry> gantries, List<Slot> slots,
-                   List<Job> inputJobSequence, List<Job> outputJobSequence, int gantrySafetyDist, int pickupPlaceDuration) {
+                   List<Job> inputJobSequence, List<Job> outputJobSequence, int gantrySafetyDist, int pickupPlaceDuration,HashMap <Integer, Slot> itemToSlot) {
         this.minX = minX;
         this.maxX = maxX;
         this.minY = minY;
@@ -46,6 +49,7 @@ public class Problem {
         this.outputJobSequence = new ArrayList<>(outputJobSequence);
         this.safetyDistance = gantrySafetyDist;
         this.pickupPlaceDuration = pickupPlaceDuration;
+        this.itemToSlot=itemToSlot;
     }
 
     public int getMinX() {
@@ -95,8 +99,17 @@ public class Problem {
     public int getPickupPlaceDuration() {
         return pickupPlaceDuration;
     }
+    
 
-    public void writeJsonFile(File file) throws IOException {
+    public HashMap<Integer, Slot> getItemToSlot() {
+		return itemToSlot;
+	}
+
+	public void setItemToSlot(HashMap<Integer, Slot> itemToSlot) {
+		this.itemToSlot = itemToSlot;
+	}
+
+	public void writeJsonFile(File file) throws IOException {
         JSONObject root = new JSONObject();
 
         JSONObject parameters = new JSONObject();
@@ -213,6 +226,9 @@ public class Problem {
             int overallMinY = Integer.MAX_VALUE, overallMaxY = Integer.MIN_VALUE;
 
             JSONArray slots = (JSONArray) root.get("slots");
+            
+            HashMap<Integer,Slot>itemToSlot=new HashMap<>();
+            
             for(Object o : slots) {
                 JSONObject slot = (JSONObject) o;
 
@@ -236,6 +252,11 @@ public class Problem {
 
                 Slot s = new Slot(id,cx,cy,minX,maxX,minY,maxY,z,type,c);
                 slotList.add(s);
+                
+                //itemID toekennen aan slot als slot een item bevat
+                if(c!=null){
+                	itemToSlot.put(c.getId(),s);
+                }
             }
 
 
@@ -292,16 +313,33 @@ public class Problem {
                     inputJobList,
                     outputJobList,
                     safetyDist,
-                    pickupPlaceDuration);
+                    pickupPlaceDuration, 
+                    itemToSlot);
         }
     }
 	public static void main(String[] args) throws IOException, ParseException {
         File file = new File("1_10_100_4_FALSE_65_50_50.json");
         Problem p = fromJson(file);
         System.out.println(p.toString());
+        
+        ArrayList<Move>solution=p.solve();
+        BufferedWriter bw=new BufferedWriter(new FileWriter("output.csv"));
+        bw.write("\"gID\";\"T\";\"x\";\"y\";\"itemsInCraneID\"");
+        for(Move m:solution){
+        	bw.write("\n");
+        	bw.write(m.toString());
+        }
+
+        
+        
     }
 
-    @Override
+    public ArrayList<Move> solve() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
     public String toString() {
         return "\nminX: " + minX
                 + "\nmaxX: " + maxX
