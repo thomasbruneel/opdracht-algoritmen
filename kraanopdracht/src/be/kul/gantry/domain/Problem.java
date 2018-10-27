@@ -60,6 +60,7 @@ public class Problem {
         return maxX;
     }
 
+
     public int getMinY() {
         return minY;
     }
@@ -317,29 +318,51 @@ public class Problem {
                     itemToSlot);
         }
     }
-	public static void main(String[] args) throws IOException, ParseException {
+
+    public static void main(String[] args) throws IOException, ParseException {
+
+        Long begin = System.currentTimeMillis();
+
         File file = new File("1_10_100_4_FALSE_65_50_50.json");
         Problem p = fromJson(file);
-        System.out.println(p.toString());
+        //System.out.println(p.toString());
         
         ArrayList<Move>solution=p.solve();
-        
+
         BufferedWriter bw=new BufferedWriter(new FileWriter("output.csv"));
         bw.write("\"gID\";\"T\";\"x\";\"y\";\"itemsInCraneID\"");
-        /*
-        for(Move m:solution){
-        	bw.write("\n");
-        	bw.write(m.toString());
-        }
-        */
 
+        try {
+            for (Move m : solution) {
+                bw.write("\n");
+                bw.write(m.toString());
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
         bw.close();
-        
+
+        Long einde = System.currentTimeMillis();
+        System.out.println("Tijd verstreken:" + (einde-begin));
     }
 
     public ArrayList<Move> solve() {
+
+        ArrayList<Move> solution = new ArrayList<>();
+
+        Map<Integer,SlotTree> rows = new HashMap<>();
+        for (Slot s : slots){
+            if(rows.containsKey(s.getCenterY())) rows.get(s.getCenterY()).addNode(s);
+            else{
+                rows.put(s.getCenterY(),new SlotTree());
+                rows.get(s.getCenterY()).addNode(s);
+            }
+        }
+        for (Integer i : rows.keySet()) rows.get(i).constructTree();
+
+
 		
-		return null;
+		return solution;
 	}
 
 	@Override

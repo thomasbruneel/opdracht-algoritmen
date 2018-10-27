@@ -1,5 +1,7 @@
 package be.kul.gantry.domain;
 
+import java.rmi.UnexpectedException;
+
 /**
  * Created by Wim on 27/04/2015.
  */
@@ -76,6 +78,16 @@ public class Slot {
     @Override
     public String toString() {
         return String.format("Slot %d (%d,%d,%d)",id,centerX,centerY,z);
+    }
+
+    public int compareTo(Slot s){
+
+        if (xMin < s.xMin) return -1;
+        if (xMin > s.xMin) return 1;
+        if (z < s.z) return -1;
+        if (z > s.z) return 1;
+
+        throw new RuntimeException("2 dezelfde slots?!?!?") ;
     }
 
     public static enum SlotType {
