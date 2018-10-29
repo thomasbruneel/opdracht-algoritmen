@@ -8,14 +8,14 @@ public class Move {
 	private int itemInCraneID;
 	
 	
-	public Move(Gantry g,int x,int y,int itemInCraneID){
+	public Move(Gantry g,int x,int y,int itemInCraneID,double extraTime){
 		this.gID=g.getId();
 		this.x=x;
 		this.y=y;
 		this.itemInCraneID=itemInCraneID;
 		
 		//tijd berekenen
-		this.T=g.getTime()+((Math.abs(g.getxPosition()-x))/g.getXSpeed())+((Math.abs(g.getyPostion()-y))/g.getYSpeed());
+		this.T=g.getTime()+extraTime+Math.max(((Math.abs(g.getxPosition()-x))/g.getXSpeed()),((Math.abs(g.getyPostion()-y))/g.getYSpeed()));
 		
 		//nieuwe waarden aan kraan toekennen
 		g.setxPosition(x);

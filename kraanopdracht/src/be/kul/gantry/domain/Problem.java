@@ -360,8 +360,26 @@ public class Problem {
         }
         for (Integer i : rows.keySet()) rows.get(i).constructTree();
 
-
-		
+        int inputIndex=0;
+        
+        //eerst outputjobs uitvoeren tot we een job tegenkomen die nog moet verwerkt worden door de input
+        for(Job outputJob:outputJobSequence){
+        	Item outputItem=outputJob.getItem();
+        	Slot slot=itemToSlot.get(outputItem.getId());
+        	
+        	//als slot leeg is d.w.z. dat we eerst nog een x-aantal inputjobs moeten afwerken vooraleer we verder kunnen doen moet de outputjobs
+        	while(slot==null){
+        		Job inputJob=inputJobSequence.get(inputIndex++);
+        		
+        		//inputjobs verwerken..
+        		
+        		//kijken of het slot ondetussen gevuld is met het outputItem, zoniet opnieuw inputjobs afhandelen
+        		slot=itemToSlot.get(outputItem.getId());
+        		
+        	}
+        	
+        	//outputjobs verwerken...
+        }
 		return solution;
 	}
 
