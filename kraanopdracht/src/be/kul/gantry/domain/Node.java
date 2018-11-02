@@ -14,6 +14,19 @@ public class Node {
         this.maxwaarde = Integer.MIN_VALUE;
     }
 
+    public int berekenmaxRange() {
+
+        int linkerwaarde=Integer.MIN_VALUE,rechterwaarde=Integer.MIN_VALUE;
+
+        if(links != null) {
+            linkerwaarde = links.berekenmaxRange();
+        }
+        if(rechts != null) {
+            rechterwaarde = rechts.berekenmaxRange();
+        }
+        maxwaarde =Math.max(Math.max(linkerwaarde,rechterwaarde),slot.getXMax());
+        return maxwaarde;
+    }
 
     //Getters & Setters
 

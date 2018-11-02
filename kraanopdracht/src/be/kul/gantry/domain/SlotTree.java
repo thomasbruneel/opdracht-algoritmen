@@ -20,6 +20,7 @@ public class SlotTree {
     public void constructTree(){
         nodes.sort(new NodeComparator());
         root = constructTree(nodes, null);
+        int treeMaxRange = root.berekenmaxRange();
     }
 
     private Node constructTree(List<Node> nodez, Node parent) {
