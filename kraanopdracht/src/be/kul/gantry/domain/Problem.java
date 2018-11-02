@@ -384,10 +384,15 @@ public class Problem {
             		Job inputJob=inputJobSequence.get(inputIndex++);
 
             		//inputjobs verwerken..
+                    solution.add(new Move(gantries.get(0),inputslot.getCenterX(),inputslot.getCenterY(),0));
+                    gantries.get(0).setItemInCrane(inputJob.getItem());
                     solution.add(new Move(gantries.get(0),inputslot.getCenterX(),inputslot.getCenterY(),pickupPlaceDuration));
+                    Slot leegSlot = rows.get(it.next()).getEmptySlot();
+                    solution.add(new Move(gantries.get(0),leegSlot.getCenterX(),leegSlot.getCenterY(),0));
+                    
 
 
-            		//kijken of het slot ondetussen gevuld is met het outputItem, zoniet opnieuw inputjobs afhandelen
+                    //kijken of het slot ondetussen gevuld is met het outputItem, zoniet opnieuw inputjobs afhandelen
             		slot=itemToSlot.get(outputItem.getId());
 
         		}
