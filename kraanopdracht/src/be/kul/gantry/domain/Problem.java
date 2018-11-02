@@ -349,16 +349,21 @@ public class Problem {
     public ArrayList<Move> solve() {
 
         ArrayList<Move> solution = new ArrayList<>();
+        Slot inputslot = new Slot(-1,-1,-1,-1,-1,-1,-1,-1,Slot.SlotType.STORAGE,null),outputslot = new Slot(-1,-1,-1,-1,-1,-1,-1,-1,Slot.SlotType.STORAGE,null);
 
         Map<Integer,SlotTree> rows = new HashMap<>();
         for (Slot s : slots){
-            if(rows.containsKey(s.getCenterY())) rows.get(s.getCenterY()).addNode(s);
-            else{
-                rows.put(s.getCenterY(),new SlotTree());
+            if (s.getType() != Slot.SlotType.STORAGE){
+                if (s.getType() == Slot.SlotType.INPUT) inputslot = s;
+                else outputslot = s;
+            } else {
+                if (!rows.containsKey(s.getCenterY())) rows.put(s.getCenterY(), new SlotTree());
                 rows.get(s.getCenterY()).addNode(s);
             }
         }
         for (Integer i : rows.keySet()) rows.get(i).constructTree();
+
+        System.out.println(inputslot.toString() + outputslot.toString());
 
         int inputIndex=0;
         
