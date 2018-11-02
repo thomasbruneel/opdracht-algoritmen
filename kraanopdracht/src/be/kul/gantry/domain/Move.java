@@ -5,15 +5,14 @@ public class Move {
 	private double T;
 	private int x;
 	private int y;
-	private int itemInCraneID;
+	private Item itemInCrane;
 	
 	
-	public Move(Gantry g,int x,int y,int itemInCraneID,double extraTime){
+	public Move(Gantry g,int x,int y,double extraTime){
 		this.gID=g.getId();
 		this.x=x;
 		this.y=y;
-		this.itemInCraneID=itemInCraneID;
-		
+		this.itemInCrane = g.getItemInCrane();
 		//tijd berekenen
 		this.T=g.getTime()+extraTime+Math.max(((Math.abs(g.getxPosition()-x))/g.getXSpeed()),((Math.abs(g.getyPostion()-y))/g.getYSpeed()));
 		
@@ -24,8 +23,8 @@ public class Move {
 	}
 	//exacte notatie voor wegschrijven naar csv file
 	public String toString(){
-		return gID+";"+T+";"+x+";"+y+";"+itemInCraneID;
-		
+		if(itemInCrane != null) return gID+";"+T+";"+x+";"+y+";"+itemInCrane.getId();
+		return gID+";"+T+";"+x+";"+y+";"+"null";
 	}
 
 }

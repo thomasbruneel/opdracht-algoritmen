@@ -14,6 +14,7 @@ public class Gantry {
     private int xPosition;
     private int yPostion;
     private double time;
+    private Item itemInCrane;
 
     public Gantry(int id,
                   int xMin, int xMax,
@@ -80,7 +81,31 @@ public class Gantry {
 		this.time = time;
 	}
 
-	public boolean overlapsGantryArea(Gantry g) {
+    public int getxMin() {
+        return xMin;
+    }
+
+    public int getxMax() {
+        return xMax;
+    }
+
+    public double getxSpeed() {
+        return xSpeed;
+    }
+
+    public double getySpeed() {
+        return ySpeed;
+    }
+
+    public Item getItemInCrane() {
+        return itemInCrane;
+    }
+
+    public void setItemInCrane(Item itemInCrane) {
+        this.itemInCrane = itemInCrane;
+    }
+
+    public boolean overlapsGantryArea(Gantry g) {
         return g.xMin < xMax && xMin < g.xMax;
     }
 

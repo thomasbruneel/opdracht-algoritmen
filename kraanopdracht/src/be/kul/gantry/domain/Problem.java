@@ -327,8 +327,7 @@ public class Problem {
         Problem p = fromJson(file);
         //System.out.println(p.toString());
         
-        ArrayList<Move>solution= new ArrayList<>();
-        p.solve();
+        ArrayList<Move>solution = p.solve();
 
         BufferedWriter bw=new BufferedWriter(new FileWriter("output.csv"));
         bw.write("\"gID\";\"T\";\"x\";\"y\";\"itemsInCraneID\"");
@@ -347,7 +346,9 @@ public class Problem {
         System.out.println("Tijd verstreken:" + (einde-begin));
     }
 
-    public void solve() {
+    public ArrayList<Move> solve() {
+
+        ArrayList<Move> solution = new ArrayList<>();
 
         Slot inputslot = new Slot(-1,-1,-1,-1,-1,-1,-1,-1,Slot.SlotType.STORAGE,null),outputslot = new Slot(-1,-1,-1,-1,-1,-1,-1,-1,Slot.SlotType.STORAGE,null);
 
@@ -367,7 +368,7 @@ public class Problem {
 
         Iterator<Integer> it = rows.keySet().iterator();
 
-        
+
 
         int inputIndex=0;
 
@@ -383,6 +384,8 @@ public class Problem {
             		Job inputJob=inputJobSequence.get(inputIndex++);
 
             		//inputjobs verwerken..
+                    solution.add(new Move(gantries.get(0),inputslot.getCenterX(),inputslot.getCenterY(),pickupPlaceDuration));
+
 
             		//kijken of het slot ondetussen gevuld is met het outputItem, zoniet opnieuw inputjobs afhandelen
             		slot=itemToSlot.get(outputItem.getId());
@@ -399,7 +402,10 @@ public class Problem {
         for(Job inputJob:inputJobSequence){
         	System.out.println(inputJob);
         }
+
+
         System.out.println("---------Opgelost----------");
+        return solution;
     }
 
 	@Override
