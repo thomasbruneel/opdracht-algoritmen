@@ -389,7 +389,10 @@ public class Problem {
                     solution.add(new Move(gantries.get(0),inputslot.getCenterX(),inputslot.getCenterY(),pickupPlaceDuration));
                     Slot leegSlot = rows.get(it.next()).getEmptySlot();
                     solution.add(new Move(gantries.get(0),leegSlot.getCenterX(),leegSlot.getCenterY(),0));
-                    
+                    leegSlot.setItem(gantries.get(0).getItemInCrane());
+                    itemToSlot.put(gantries.get(0).getItemInCrane().getId(),leegSlot);
+                    gantries.get(0).setItemInCrane(null);
+                    solution.add(new Move(gantries.get(0),leegSlot.getCenterX(),leegSlot.getCenterY(),pickupPlaceDuration));
 
 
                     //kijken of het slot ondetussen gevuld is met het outputItem, zoniet opnieuw inputjobs afhandelen
