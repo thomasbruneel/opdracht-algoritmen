@@ -34,6 +34,17 @@ public class SlotTree {
         return node;
     }
 
+    public Slot getEmptySlot() throws RuntimeException {
+
+        for(int z=0; z<4; z++){
+            for (Node n : nodes){
+                if (n.getSlot().getZ()==z && n.getSlot().getItem()==null) return n.getSlot();
+            }
+        }
+
+        throw new RuntimeException("Rij vol");
+    }
+
 
     //Getters & Setters
 

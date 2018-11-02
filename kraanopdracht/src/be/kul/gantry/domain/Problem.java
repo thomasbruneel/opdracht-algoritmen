@@ -327,7 +327,8 @@ public class Problem {
         Problem p = fromJson(file);
         //System.out.println(p.toString());
         
-        ArrayList<Move>solution=p.solve();
+        ArrayList<Move>solution= new ArrayList<>();
+        p.solve();
 
         BufferedWriter bw=new BufferedWriter(new FileWriter("output.csv"));
         bw.write("\"gID\";\"T\";\"x\";\"y\";\"itemsInCraneID\"");
@@ -346,9 +347,8 @@ public class Problem {
         System.out.println("Tijd verstreken:" + (einde-begin));
     }
 
-    public ArrayList<Move> solve() {
+    public void solve() {
 
-        ArrayList<Move> solution = new ArrayList<>();
         Slot inputslot = new Slot(-1,-1,-1,-1,-1,-1,-1,-1,Slot.SlotType.STORAGE,null),outputslot = new Slot(-1,-1,-1,-1,-1,-1,-1,-1,Slot.SlotType.STORAGE,null);
 
         Map<Integer,SlotTree> rows = new HashMap<>();
@@ -365,38 +365,42 @@ public class Problem {
 
         System.out.println(inputslot.toString() + outputslot.toString());
 
-        int inputIndex=0;
+        Iterator<Integer> it = rows.keySet().iterator();
+
         
+
+        int inputIndex=0;
+
         //eerst outputjobs uitvoeren tot we een job tegenkomen die nog moet verwerkt worden door de input
         for(Job outputJob:outputJobSequence){
         	Item outputItem=outputJob.getItem();
         	Slot slot=itemToSlot.get(outputItem.getId());
-        	
+
         	//als slot leeg is d.w.z. dat we eerst nog een x-aantal inputjobs moeten afwerken vooraleer we verder kunnen doen moet de outputjobs
         	while(slot==null){
         		if(inputIndex<inputJobSequence.size()){
-        			
+
             		Job inputJob=inputJobSequence.get(inputIndex++);
-            		
+
             		//inputjobs verwerken..
-            		
+
             		//kijken of het slot ondetussen gevuld is met het outputItem, zoniet opnieuw inputjobs afhandelen
             		slot=itemToSlot.get(outputItem.getId());
-        			
+
         		}
 
-        		
+
         	}
-        	
+
         	//outputjobs verwerken...
         }
-        
+
         // als alle outputjobs klaar zijn, de rest van de inputjobs verwerken
         for(Job inputJob:inputJobSequence){
         	System.out.println(inputJob);
         }
-		return solution;
-	}
+        System.out.println("---------Opgelost----------");
+    }
 
 	@Override
     public String toString() {
