@@ -369,16 +369,26 @@ public class Problem {
         	
         	//als slot leeg is d.w.z. dat we eerst nog een x-aantal inputjobs moeten afwerken vooraleer we verder kunnen doen moet de outputjobs
         	while(slot==null){
-        		Job inputJob=inputJobSequence.get(inputIndex++);
-        		
-        		//inputjobs verwerken..
-        		
-        		//kijken of het slot ondetussen gevuld is met het outputItem, zoniet opnieuw inputjobs afhandelen
-        		slot=itemToSlot.get(outputItem.getId());
+        		if(inputIndex<inputJobSequence.size()){
+        			
+            		Job inputJob=inputJobSequence.get(inputIndex++);
+            		
+            		//inputjobs verwerken..
+            		
+            		//kijken of het slot ondetussen gevuld is met het outputItem, zoniet opnieuw inputjobs afhandelen
+            		slot=itemToSlot.get(outputItem.getId());
+        			
+        		}
+
         		
         	}
         	
         	//outputjobs verwerken...
+        }
+        
+        // als alle outputjobs klaar zijn, de rest van de inputjobs verwerken
+        for(Job inputJob:inputJobSequence){
+        	System.out.println(inputJob);
         }
 		return solution;
 	}
