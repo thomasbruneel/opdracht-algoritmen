@@ -33,6 +33,34 @@ public class SlotTree {
         if(!rechts.isEmpty()) node.setRechts(constructTree(rechts, node));
         return node;
     }
+    
+    public List<Slot> findOverlapping(int xMin, int xMax) {
+    	List<Slot> sloten= new ArrayList<>();
+    	findOverlappingInterval(xMin,xMax,sloten,root);
+        return sloten;
+    }
+    
+	private void findOverlappingInterval(int xMin,int xMax, List<Slot> sloten, Node n) {
+		//verder boom doorlopen als de low-waarde van het interval ab kleiner is dan de max waarde van huidige node
+		if(xMin<n.getMaxwaarde()){
+			
+			if(n.getLinks()!=null){
+				findOverlappingInterval(xMin,xMax,sloten, n.getLinks());
+			}
+		
+			// als de high-waarde van het interval ab kleiner zou zijn dan dan dan de low waarde van de huidige node dan moeten we rechter knoop niet meer doorlopen anders wel
+			if(xMax>=n.getSlot().getXMin()){
+				if(n.getRechts()!=null){
+					findOverlappingInterval(xMin,xMax,sloten, n.getRechts());
+					
+				}
+			}
+		}
+		if((n.getSlot().getItem()!=null)&&(!((xMin>=n.getSlot().getXMax())||(xMax<=n.getSlot().getXMin())))){
+			sloten.add(n.getSlot());
+		}
+		
+	}
 
     public Slot getEmptySlot() throws RuntimeException {
 
