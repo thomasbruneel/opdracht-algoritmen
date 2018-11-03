@@ -363,7 +363,10 @@ public class Problem {
             }
         }
         for (Integer i : rows.keySet()) rows.get(i).constructTree();
-
+        /*
+        ArrayList<Slot>testen=(ArrayList<Slot>) rows.get(5).findOverlapping(10, 30);
+        System.out.println(testen);
+        */
         System.out.println(inputslot.toString() + outputslot.toString());
 
         Iterator<Integer> it = rows.keySet().iterator();
@@ -407,8 +410,21 @@ public class Problem {
         }
 
         // als alle outputjobs klaar zijn, de rest van de inputjobs verwerken
-        for(Job inputJob:inputJobSequence){
-        	System.out.println(inputJob);
+        for(int i=inputIndex;i<inputJobSequence.size();i++){
+        	
+        	Job inputJob=inputJobSequence.get(i);
+        	
+        	//inputjobs verwerken..
+            solution.add(new Move(gantries.get(0),inputslot.getCenterX(),inputslot.getCenterY(),0));
+            gantries.get(0).setItemInCrane(inputJob.getItem());
+            solution.add(new Move(gantries.get(0),inputslot.getCenterX(),inputslot.getCenterY(),pickupPlaceDuration));
+            Slot leegSlot = rows.get(it.next()).getEmptySlot();
+            solution.add(new Move(gantries.get(0),leegSlot.getCenterX(),leegSlot.getCenterY(),0));
+            leegSlot.setItem(gantries.get(0).getItemInCrane());
+            itemToSlot.put(gantries.get(0).getItemInCrane().getId(),leegSlot);
+            gantries.get(0).setItemInCrane(null);
+            solution.add(new Move(gantries.get(0),leegSlot.getCenterX(),leegSlot.getCenterY(),pickupPlaceDuration));
+        	
         }
 
 
