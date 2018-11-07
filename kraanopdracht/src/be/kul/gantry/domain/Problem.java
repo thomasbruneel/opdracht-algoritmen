@@ -339,9 +339,10 @@ public class Problem {
         }
         for (Integer i : rows.keySet()) rows.get(i).constructTree();
         /*
-        ArrayList<Slot>testen=(ArrayList<Slot>) rows.get(5).findOverlapping(10, 30);
+        ArrayList<Slot>testen=(ArrayList<Slot>) rows.get(5).findOverlapping(10, 30,0);
         System.out.println(testen);
         */
+ 
         System.out.println(inputslot.toString() + outputslot.toString());
 
         Iterator<Integer> it = rows.keySet().iterator();
@@ -384,7 +385,11 @@ public class Problem {
         	//outputjobs verwerken..
         	solution.add(new Move(gantries.get(0),slot.getCenterX(),slot.getCenterY(),0));
         	
-        	// TODO: kijken of er items staan boven het slot die we nodig hebben, indien wel deze verplaatsen naar lege slots
+        	
+        	ArrayList<Slot>overlappingSlots=(ArrayList<Slot>) rows.get(slot.getCenterY()).findOverlapping(slot.getXMin(), slot.getXMax(), slot.getZ());
+        	for(Slot s:overlappingSlots){
+        		//TODO: alle items die boven het slot staan die we nodig hebben, verplaatsen naar lege slots
+        	}
         	
         	gantries.get(0).setItemInCrane(outputItem);
         	itemToSlot.remove(outputItem.getId());
