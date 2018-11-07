@@ -319,32 +319,7 @@ public class Problem {
         }
     }
 
-    public static void main(String[] args) throws IOException, ParseException {
 
-        Long begin = System.currentTimeMillis();
-
-        File file = new File("1_10_100_4_FALSE_65_50_50.json");
-        Problem p = fromJson(file);
-        //System.out.println(p.toString());
-        
-        ArrayList<Move>solution = p.solve();
-
-        BufferedWriter bw=new BufferedWriter(new FileWriter("output.csv"));
-        bw.write("\"gID\";\"T\";\"x\";\"y\";\"itemsInCraneID\"");
-
-        try {
-            for (Move m : solution) {
-                bw.write("\n");
-                bw.write(m.toString());
-            }
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
-        bw.close();
-
-        Long einde = System.currentTimeMillis();
-        System.out.println("Tijd verstreken:" + (einde-begin));
-    }
 
     public ArrayList<Move> solve() {
 
@@ -406,7 +381,19 @@ public class Problem {
 
         	}
 
-        	//outputjobs verwerken...
+        	//outputjobs verwerken..
+        	solution.add(new Move(gantries.get(0),slot.getCenterX(),slot.getCenterY(),0));
+        	
+        	// TODO: kijken of er items staan boven het slot die we nodig hebben, indien wel deze verplaatsen naar lege slots
+        	
+        	gantries.get(0).setItemInCrane(outputItem);
+        	itemToSlot.remove(outputItem.getId());
+        	solution.add(new Move(gantries.get(0),slot.getCenterX(),slot.getCenterY(),pickupPlaceDuration));
+        	solution.add(new Move(gantries.get(0),outputslot.getCenterX(),outputslot.getCenterY(),0));
+        	gantries.get(0).setItemInCrane(null);
+        	solution.add(new Move(gantries.get(0),outputslot.getCenterX(),outputslot.getCenterY(),pickupPlaceDuration));
+
+        	
         }
 
         // als alle outputjobs klaar zijn, de rest van de inputjobs verwerken
