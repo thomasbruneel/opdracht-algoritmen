@@ -392,7 +392,7 @@ public class Problem {
                 do {
                     if(!it.hasNext()) it = rows.keySet().iterator();
                     leegSlot = rows.get(it.next()).getEmptySlot();
-                } while (leegSlot.getCenterY() != s.getCenterY());
+                } while (leegSlot.getCenterY() == slot.getCenterY());
                 //Kraan verplaatsen naar bestemming
                 solution.add(new Move(gantries.get(0),leegSlot.getCenterX(),leegSlot.getCenterY(),0));
                 //item neerleggen
