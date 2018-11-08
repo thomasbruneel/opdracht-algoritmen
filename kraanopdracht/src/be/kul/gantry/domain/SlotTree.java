@@ -34,9 +34,10 @@ public class SlotTree {
         return node;
     }
     
-    public List<Slot> findOverlapping(int xMin, int xMax,int z) {
-    	List<Slot> sloten= new ArrayList<>();
+    public ArrayList<Slot> findOverlapping(int xMin, int xMax,int z) {
+    	ArrayList<Slot> sloten= new ArrayList<>();
     	findOverlappingInterval(xMin,xMax,z,sloten,root);
+    	sloten.sort(new SlotHeightComparator());
         return sloten;
     }
     
