@@ -19,7 +19,7 @@ public class Main {
 		Problem p = Problem.fromJson(new File(inputFile));
 		ArrayList<Move> solution = p.solve();
 		BufferedWriter bw=new BufferedWriter(new FileWriter(outputFile));
-		bw.write("\"gID\";\"T\";\"x\";\"y\";\"itemsInCraneID\"");
+		bw.write("\"gID\";\"T\";\"x\";\"y\";\"itemInCraneID\"");
         try {
             for (Move m : solution) {
                 bw.write("\n");

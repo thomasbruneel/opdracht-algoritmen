@@ -15,8 +15,8 @@
       <file leaf-file-name="Problem.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/be/kul/gantry/domain/Problem.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="446" column="116" lean-forward="true" selection-start-line="446" selection-start-column="116" selection-end-line="446" selection-end-column="116" />
+            <state relative-caret-position="260">
+              <caret line="334" column="68" lean-forward="false" selection-start-line="334" selection-start-column="68" selection-end-line="334" selection-end-column="68" />
               <folding>
                 <element signature="method#writeJsonFile#0;class#Problem#0" expanded="false" />
                 <element signature="method#fromJson#0;class#Problem#0" expanded="false" />
@@ -25,21 +25,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="output.csv" pinned="false" current-in-tab="true">
+      <file leaf-file-name="output.csv" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/output.csv">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="5" column="17" lean-forward="true" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+            <state relative-caret-position="-10823">
+              <caret line="4" column="9" lean-forward="true" selection-start-line="4" selection-start-column="9" selection-end-line="4" selection-end-column="9" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/be/kul/gantry/domain/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="273">
-              <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+            <state relative-caret-position="315">
+              <caret line="21" column="50" lean-forward="false" selection-start-line="21" selection-start-column="50" selection-end-line="21" selection-end-column="50" />
               <folding />
             </state>
           </provider>
@@ -150,10 +150,10 @@
         <option value="$PROJECT_DIR$/src/be/kul/gantry/domain/Node.java" />
         <option value="$PROJECT_DIR$/src/be/kul/gantry/domain/Move.java" />
         <option value="$PROJECT_DIR$/src/be/kul/gantry/domain/Gantry.java" />
-        <option value="$PROJECT_DIR$/src/be/kul/gantry/domain/Main.java" />
         <option value="$PROJECT_DIR$/src/be/kul/gantry/domain/SlotTree.java" />
         <option value="$PROJECT_DIR$/src/be/kul/gantry/domain/SlotHeightComparator.java" />
         <option value="$PROJECT_DIR$/src/be/kul/gantry/domain/Problem.java" />
+        <option value="$PROJECT_DIR$/src/be/kul/gantry/domain/Main.java" />
       </list>
     </option>
   </component>
@@ -780,14 +780,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/be/kul/gantry/domain/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/be/kul/gantry/domain/Move.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
@@ -828,17 +820,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/be/kul/gantry/domain/Problem.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="446" column="116" lean-forward="true" selection-start-line="446" selection-start-column="116" selection-end-line="446" selection-end-column="116" />
-          <folding>
-            <element signature="method#writeJsonFile#0;class#Problem#0" expanded="false" />
-            <element signature="method#fromJson#0;class#Problem#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/1_10_100_4_FALSE_65_50_50.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="84">
@@ -854,8 +835,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/output.csv">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="5" column="17" lean-forward="true" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+        <state relative-caret-position="-10823">
+          <caret line="4" column="9" lean-forward="true" selection-start-line="4" selection-start-column="9" selection-end-line="4" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/be/kul/gantry/domain/Problem.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="334" column="68" lean-forward="false" selection-start-line="334" selection-start-column="68" selection-end-line="334" selection-end-column="68" />
+          <folding>
+            <element signature="method#writeJsonFile#0;class#Problem#0" expanded="false" />
+            <element signature="method#fromJson#0;class#Problem#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/be/kul/gantry/domain/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="21" column="50" lean-forward="false" selection-start-line="21" selection-start-column="50" selection-end-line="21" selection-end-column="50" />
           <folding />
         </state>
       </provider>

@@ -1,7 +1,5 @@
 package be.kul.gantry.domain;
 
-
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.json.simple.JSONArray;
@@ -16,9 +14,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-/**
- * Created by Wim on 27/04/2015.
- */
 public class Problem {
 
     private final int minX, maxX, minY, maxY;
@@ -338,10 +333,6 @@ public class Problem {
             }
         }
         for (Integer i : rows.keySet()) rows.get(i).constructTree();
-        /*
-        ArrayList<Slot>testen=(ArrayList<Slot>) rows.get(5).findOverlapping(10, 30,0);
-        System.out.println(testen);
-        */
  
         System.out.println(inputslot.toString() + outputslot.toString());
 
