@@ -333,8 +333,6 @@ public class Problem {
             }
         }
         for (Integer i : rows.keySet()) rows.get(i).constructTree();
- 
-        System.out.println(inputslot.toString() + outputslot.toString());
 
         Iterator<Integer> it = rows.keySet().iterator();
 
@@ -349,8 +347,6 @@ public class Problem {
 
         	//als slot leeg is d.w.z. dat we eerst nog een x-aantal inputjobs moeten afwerken vooraleer we verder kunnen doen moet de outputjobs
         	while(slot==null){
-        		if(inputIndex<inputJobSequence.size()){     //Infinite loop mogelijk? => als er een item gerequest wordt dat niet in input en startconfiguratie staat
-
             		Job inputJob=inputJobSequence.get(inputIndex++);
 
             		//inputjobs verwerken..
@@ -372,7 +368,6 @@ public class Problem {
                     solution.add(new Move(gantries.get(0),leegSlot.getCenterX(),leegSlot.getCenterY(),pickupPlaceDuration));
                     //kijken of het slot ondetussen gevuld is met het outputItem, zoniet opnieuw inputjobs afhandelen
             		slot=itemToSlot.get(outputItem.getId());
-        		}
         	}
 
         	//outputjobs verwerken..
