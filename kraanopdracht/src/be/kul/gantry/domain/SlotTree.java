@@ -33,7 +33,7 @@ public class SlotTree {
         if(!rechts.isEmpty()) node.setRechts(constructTree(rechts, node));
         return node;
     }
-    
+    //alle slots binnen bepaald interval zoeken
     public ArrayList<Slot> findOverlapping(int xMin, int xMax,int z) {
     	ArrayList<Slot> sloten= new ArrayList<>();
     	findOverlappingInterval(xMin,xMax,z,sloten,root);
@@ -42,14 +42,14 @@ public class SlotTree {
     }
     
 	private void findOverlappingInterval(int xMin, int xMax, int z, List<Slot> sloten, Node n) {
-		//verder boom doorlopen als de low-waarde van het interval ab kleiner is dan de max waarde van huidige node
+		//verder boom doorlopen als xMin kleiner is dan de max waarde van huidige node
 		if(xMin<n.getMaxwaarde()){
 			
 			if(n.getLinks()!=null){
 				findOverlappingInterval(xMin, xMax, z, sloten, n.getLinks());
 			}
 		
-			// als de high-waarde van het interval ab kleiner zou zijn dan dan dan de low waarde van de huidige node dan moeten we rechter knoop niet meer doorlopen anders wel
+			// als de xMax kleiner zou zijn dan dan dan de low waarde van de huidige node dan moeten we rechter knoop niet meer doorlopen anders wel
 			if(xMax>=n.getSlot().getXMin()){
 				if(n.getRechts()!=null){
 					findOverlappingInterval(xMin, xMax , z, sloten, n.getRechts());
@@ -57,6 +57,7 @@ public class SlotTree {
 				}
 			}
 		}
+		//slot toevoegen als het een item bevat en groter is dan de meegegeven z-waarde en er is overlap
 		if((n.getSlot().getItem()!=null)&&(n.getSlot().getZ()>z)&&(!((xMin>=n.getSlot().getXMax())||(xMax<=n.getSlot().getXMin())))){
 			sloten.add(n.getSlot());
 		}
