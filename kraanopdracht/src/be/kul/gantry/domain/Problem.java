@@ -406,6 +406,7 @@ public class Problem {
             //outputitem oppakken
             gantries.get(0).setItemInCrane(outputItem);
         	itemToSlot.remove(outputItem.getId());
+        	slot.setItem(null);
         	solution.add(new Move(gantries.get(0),slot.getCenterX(),slot.getCenterY(),pickupPlaceDuration));
         	//Kraan naar outputslot verplaatsen
         	solution.add(new Move(gantries.get(0),outputslot.getCenterX(),outputslot.getCenterY(),0));
