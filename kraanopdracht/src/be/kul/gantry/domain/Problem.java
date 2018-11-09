@@ -351,7 +351,7 @@ public class Problem {
 
             		//inputjobs verwerken..
 
-                    //Kraan verplaatsen naar inputslot
+                    //InputKraan verplaatsen naar inputslot
                     solution.add(new Move(gantries.get(0),inputslot.getCenterX(),inputslot.getCenterY(),0));
                     //item oppikken van inputslot
                     gantries.get(0).setItemInCrane(inputJob.getItem());
@@ -359,7 +359,10 @@ public class Problem {
                     //Bestemming nieuw item bepalen
                     if(!it.hasNext()) it = rows.keySet().iterator();
                     Slot leegSlot = rows.get(it.next()).getEmptySlot();
-                    //Kraan verplaatsen naar bestemming
+
+                    //Collisioncheck
+
+                    //InputKraan verplaatsen naar bestemming
                     solution.add(new Move(gantries.get(0),leegSlot.getCenterX(),leegSlot.getCenterY(),0));
                     //item neerleggen
                     leegSlot.setItem(gantries.get(0).getItemInCrane());
