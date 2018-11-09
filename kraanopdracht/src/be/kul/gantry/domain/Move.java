@@ -11,7 +11,7 @@ public class Move {
 	
 	
 	public Move(List<Gantry> gantries,int index,int x,int y,double extraTime){
-		this.gID=gantries.get(index).getId();
+		this.gID=index;
 		this.x=x;
 		this.y=y;
 		this.itemInCrane = gantries.get(index).getItemInCrane();
