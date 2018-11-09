@@ -37,4 +37,43 @@ public class Move {
 		return gID+";"+T+";"+x+";"+y+";"+"null";
 	}
 
+	public int getgID() {
+		return gID;
+	}
+
+	public void setgID(int gID) {
+		this.gID = gID;
+	}
+
+	public double getT() {
+		return T;
+	}
+
+	public void setT(double t) {
+		T = t;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public Item getItemInCrane() {
+		return itemInCrane;
+	}
+
+	public void setItemInCrane(Item itemInCrane) {
+		this.itemInCrane = itemInCrane;
+	}
 }
