@@ -27,6 +27,8 @@ public class Gantry {
         this.startY = startY;
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
+        this.xPosition = startX;
+        this.yPostion = startY;
     }
 
     public int getId() {

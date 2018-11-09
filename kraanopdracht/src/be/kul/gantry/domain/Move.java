@@ -21,6 +21,8 @@ public class Move {
 		//update waarden huidige kraan
 		gantries.get(index).setxPosition(x);
 		gantries.get(index).setyPostion(y);
+
+		//-----foreachlus?
 		gantries.get(index).setTime(T);
 		
 		//update tijd andere kraan
@@ -30,6 +32,7 @@ public class Move {
 		else{
 			gantries.get(0).setTime(T);
 		}
+		//-----
 	}
 	//exacte notatie voor wegschrijven naar csv file
 	public String toString(){
