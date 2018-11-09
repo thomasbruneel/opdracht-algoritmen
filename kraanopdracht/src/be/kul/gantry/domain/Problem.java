@@ -374,7 +374,7 @@ public class Problem {
 
             //Alle bovenliggende slots bepalen
         	ArrayList<Slot> overlappingSlots = rows.get(slot.getCenterY()).findOverlapping(slot.getXMin(), slot.getXMax(), slot.getZ());
-        	for(Slot s:overlappingSlots){   // TODO: Geschrankt: overlappende slots van s eerst wegwerken
+        	for(Slot s:overlappingSlots){
                 //Kraan verplaatsen naar te verplaatsen item verplaatsen
                 solution.add(new Move(gantries.get(0),s.getCenterX(),s.getCenterY(),0));
                 //item oppakken
