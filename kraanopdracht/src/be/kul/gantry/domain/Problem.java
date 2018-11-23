@@ -352,6 +352,7 @@ public class Problem {
             		//inputjobs verwerken..
 
                     //InputKraan verplaatsen naar inputslot
+                    solution.add(new Move(gantries,0,gantries.get(0).getxPosition(),gantries.get(0).getyPostion(),0));
                     solution.add(new Move(gantries,0,inputslot.getCenterX(),inputslot.getCenterY(),0));
                     //item oppikken van inputslot
                     gantries.get(0).setItemInCrane(inputJob.getItem());
@@ -362,10 +363,12 @@ public class Problem {
 
                     //Collision met outputgantry vermijden
                     if(collision(gantries.get(0),gantries.get(1),leegSlot,safetyDistance)){
+                        solution.add(new Move(gantries,1,gantries.get(1).getxPosition(),gantries.get(1).getyPostion(),0));
                         solution.add(new Move(gantries,1,leegSlot.getCenterX()+safetyDistance,gantries.get(1).getyPostion(),0));
                     }
 
                     //InputKraan verplaatsen naar bestemming
+                    solution.add(new Move(gantries,0,gantries.get(0).getxPosition(),gantries.get(0).getyPostion(),0));
                     solution.add(new Move(gantries,0,leegSlot.getCenterX(),leegSlot.getCenterY(),0));
                     //item neerleggen
                     leegSlot.setItem(gantries.get(0).getItemInCrane());
@@ -383,10 +386,12 @@ public class Problem {
 
         	//collision met inputKraan vermijden
         	if(collision(gantries.get(1),gantries.get(0),slot,safetyDistance)){
-        	    solution.add(new Move(gantries,0,slot.getCenterX()-safetyDistance,gantries.get(0).getyPostion(),0));
+                solution.add(new Move(gantries,0,gantries.get(0).getxPosition(),gantries.get(0).getyPostion(),0));
+                solution.add(new Move(gantries,0,slot.getCenterX()-safetyDistance,gantries.get(0).getyPostion(),0));
             }
 
             //OutputKraan verplaatsen naar slot met outputitem
+            solution.add(new Move(gantries,1,gantries.get(1).getxPosition(),gantries.get(1).getyPostion(),0));
             solution.add(new Move(gantries,1,slot.getCenterX(),slot.getCenterY(),0));
             //outputitem oppakken
             gantries.get(1).setItemInCrane(outputItem);
@@ -394,6 +399,7 @@ public class Problem {
             slot.setItem(null);
             solution.add(new Move(gantries,1,slot.getCenterX(),slot.getCenterY(),pickupPlaceDuration));
             //Kraan naar outputslot verplaatsen
+            solution.add(new Move(gantries,1,gantries.get(1).getxPosition(),gantries.get(1).getyPostion(),0));
             solution.add(new Move(gantries,1,outputslot.getCenterX(),outputslot.getCenterY(),0));
             //item in outputslot neerleggen
             gantries.get(1).setItemInCrane(null);
@@ -411,6 +417,7 @@ public class Problem {
             //inputjobs verwerken..
 
             //InputKraan verplaatsen naar inputslot
+            solution.add(new Move(gantries,0,gantries.get(0).getxPosition(),gantries.get(0).getyPostion(),0));
             solution.add(new Move(gantries,0,inputslot.getCenterX(),inputslot.getCenterY(),0));
             //item oppikken van inputslot
             gantries.get(0).setItemInCrane(inputJob.getItem());
@@ -421,10 +428,12 @@ public class Problem {
 
             //Collisioncheck
             if(collision(gantries.get(0),gantries.get(1),leegSlot,safetyDistance)){
+                solution.add(new Move(gantries,1,gantries.get(1).getxPosition(),gantries.get(1).getyPostion(),0));
                 solution.add(new Move(gantries,1,leegSlot.getCenterX()+safetyDistance,gantries.get(1).getyPostion(),0));
             }
 
             //InputKraan verplaatsen naar bestemming
+            solution.add(new Move(gantries,0,gantries.get(0).getxPosition(),gantries.get(0).getyPostion(),0));
             solution.add(new Move(gantries,0,leegSlot.getCenterX(),leegSlot.getCenterY(),0));
             //item neerleggen
             leegSlot.setItem(gantries.get(0).getItemInCrane());
@@ -459,16 +468,19 @@ public class Problem {
             if(gantryindex == 0){
                 //Collision met outputkraan vermijden
                 if(collision(gantries.get(0),gantries.get(1),s,safetyDistance)){
+                    solution.add(new Move(gantries,1,gantries.get(1).getxPosition(),gantries.get(1).getyPostion(),0));
                     solution.add(new Move(gantries,1,s.getCenterX()+safetyDistance,gantries.get(1).getyPostion(),0));
                 }
             } else{
                 //Collision met InputKraan vermijden
                 if(collision(gantries.get(1),gantries.get(0),s,safetyDistance)){
+                    solution.add(new Move(gantries,0,gantries.get(0).getxPosition(),gantries.get(0).getyPostion(),0));
                     solution.add(new Move(gantries,0,s.getCenterX()-safetyDistance,gantries.get(0).getyPostion(),0));
                 }
             }
 
             //Kraan verplaatsen naar te verplaatsen item
+            solution.add(new Move(gantries,gantryindex,gantries.get(gantryindex).getxPosition(),gantries.get(gantryindex).getyPostion(),0));
             solution.add(new Move(gantries,gantryindex,s.getCenterX(),s.getCenterY(),0));
             //item oppakken
             gantries.get(gantryindex).setItemInCrane(s.getItem());
@@ -486,16 +498,19 @@ public class Problem {
             if(gantryindex == 0){
                 //Collision met outputkraan vermijden
                 if(collision(gantries.get(0),gantries.get(1),leegSlot,safetyDistance)){
+                    solution.add(new Move(gantries,1,gantries.get(1).getxPosition(),gantries.get(1).getyPostion(),0));
                     solution.add(new Move(gantries,1,leegSlot.getCenterX()+safetyDistance,gantries.get(1).getyPostion(),0));
                 }
             } else{
                 //Collision met inputkraan vermijden
                 if(collision(gantries.get(1),gantries.get(0),leegSlot,safetyDistance)){
+                    solution.add(new Move(gantries,0,gantries.get(0).getxPosition(),gantries.get(0).getyPostion(),0));
                     solution.add(new Move(gantries,0,leegSlot.getCenterX()-safetyDistance,gantries.get(0).getyPostion(),0));
                 }
             }
 
             //Kraan verplaatsen naar bestemming
+            solution.add(new Move(gantries,gantryindex,gantries.get(gantryindex).getxPosition(),gantries.get(gantryindex).getyPostion(),0));
             solution.add(new Move(gantries,gantryindex,leegSlot.getCenterX(),leegSlot.getCenterY(),0));
             //item neerleggen
             leegSlot.setItem(gantries.get(gantryindex).getItemInCrane());
