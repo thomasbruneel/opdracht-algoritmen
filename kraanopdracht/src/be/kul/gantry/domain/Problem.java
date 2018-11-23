@@ -321,6 +321,9 @@ public class Problem {
         ArrayList<Move> solution = new ArrayList<>();
 
         Slot inputslot = new Slot(-1,-1,-1,-1,-1,-1,-1,-1,Slot.SlotType.STORAGE,null),outputslot = new Slot(-1,-1,-1,-1,-1,-1,-1,-1,Slot.SlotType.STORAGE,null);
+        Gantry inputGangtry=gantries.get(0);
+        Gantry outputGangtry=gantries.get(1);
+        
 
         Map<Integer,SlotTree> rows = new HashMap<>();
         for (Slot s : slots){

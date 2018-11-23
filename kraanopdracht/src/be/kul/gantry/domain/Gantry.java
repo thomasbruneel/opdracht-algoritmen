@@ -1,5 +1,7 @@
 package be.kul.gantry.domain;
 
+import java.util.ArrayList;
+
 /**
  * Created by Wim on 27/04/2015.
  */
@@ -15,6 +17,8 @@ public class Gantry {
     private int yPostion;
     private double time;
     private Item itemInCrane;
+    
+    private ArrayList<CraneState> states;
 
     public Gantry(int id,
                   int xMin, int xMax,
@@ -29,6 +33,7 @@ public class Gantry {
         this.ySpeed = ySpeed;
         this.xPosition = startX;
         this.yPostion = startY;
+        this.states=new ArrayList<CraneState>();
     }
 
     public int getId() {
@@ -106,8 +111,17 @@ public class Gantry {
     public void setItemInCrane(Item itemInCrane) {
         this.itemInCrane = itemInCrane;
     }
+    
 
-    public boolean overlapsGantryArea(Gantry g) {
+    public ArrayList<CraneState> getStates() {
+		return states;
+	}
+
+	public void setStates(ArrayList<CraneState> states) {
+		this.states = states;
+	}
+
+	public boolean overlapsGantryArea(Gantry g) {
         return g.xMin < xMax && xMin < g.xMax;
     }
 
