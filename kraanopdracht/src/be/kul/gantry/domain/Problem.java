@@ -463,8 +463,8 @@ public class Problem {
                 }
             } else{
                 //Collision met InputKraan vermijden
-                if(collision(gantries.get(1),gantries.get(0),slot,safetyDistance)){
-                    solution.add(new Move(gantries,0,slot.getCenterX()-safetyDistance,gantries.get(0).getyPostion(),0));
+                if(collision(gantries.get(1),gantries.get(0),s,safetyDistance)){
+                    solution.add(new Move(gantries,0,s.getCenterX()-safetyDistance,gantries.get(0).getyPostion(),0));
                 }
             }
 
@@ -485,13 +485,13 @@ public class Problem {
             //collision
             if(gantryindex == 0){
                 //Collision met outputkraan vermijden
-                if(collision(gantries.get(0),gantries.get(1),s,safetyDistance)){
-                    solution.add(new Move(gantries,1,s.getCenterX()+safetyDistance,gantries.get(1).getyPostion(),0));
+                if(collision(gantries.get(0),gantries.get(1),leegSlot,safetyDistance)){
+                    solution.add(new Move(gantries,1,leegSlot.getCenterX()+safetyDistance,gantries.get(1).getyPostion(),0));
                 }
             } else{
                 //Collision met inputkraan vermijden
-                if(collision(gantries.get(1),gantries.get(0),slot,safetyDistance)){
-                    solution.add(new Move(gantries,0,slot.getCenterX()-safetyDistance,gantries.get(0).getyPostion(),0));
+                if(collision(gantries.get(1),gantries.get(0),leegSlot,safetyDistance)){
+                    solution.add(new Move(gantries,0,leegSlot.getCenterX()-safetyDistance,gantries.get(0).getyPostion(),0));
                 }
             }
 
