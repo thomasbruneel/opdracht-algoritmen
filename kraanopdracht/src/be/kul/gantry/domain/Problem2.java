@@ -29,6 +29,8 @@ public class Problem2 {
     
     private HashMap<Integer,Slot> itemToSlot;
 
+    private double time;
+
     public Problem2(int minX, int maxX, int minY, int maxY, int maxLevels,
                    List<Item> items, List<Gantry> gantries, List<Slot> slots,
                    List<Job> inputJobSequence, List<Job> outputJobSequence, int gantrySafetyDist, int pickupPlaceDuration,HashMap <Integer, Slot> itemToSlot) {
@@ -45,6 +47,8 @@ public class Problem2 {
         this.safetyDistance = gantrySafetyDist;
         this.pickupPlaceDuration = pickupPlaceDuration;
         this.itemToSlot=itemToSlot;
+        this.time=0;
+
     }
 
     public int getMinX() {
@@ -345,36 +349,48 @@ public class Problem2 {
 
         //eerst outputjobs uitvoeren tot we een job tegenkomen die nog moet verwerkt worden door de input
         for(Job outputJob:outputJobSequence){
+            outputGantry.start(time);
         	Item outputItem=outputJob.getItem();
         	Slot slot=itemToSlot.get(outputItem.getId());
 
         	//als slot leeg is d.w.z. dat we eerst nog een x-aantal inputjobs moeten afwerken vooraleer we verder kunnen doen moet de outputjobs
         	while(slot==null){
+        	        outputGantry.stop();
             		Job inputJob=inputJobSequence.get(inputIndex++);
 
             		//inputjobs verwerken..
 
                     //InputKraan verplaatsen naar inputslot
-                    solution.add(new Move(gantries,0,inputslot.getCenterX(),inputslot.getCenterY(),0));
+                    inputGantry.start(time);
+                    inputGantry.move(inputslot,time);
+                    updateCurrentTime();
                     //item oppikken van inputslot
-                    gantries.get(0).setItemInCrane(inputJob.getItem());
-                    solution.add(new Move(gantries,0,inputslot.getCenterX(),inputslot.getCenterY(),pickupPlaceDuration));
+                    inputGantry.pickup(inputJob.getItem(),pickupPlaceDuration);
+
                     //Bestemming nieuw item bepalen
                     if(!it.hasNext()) it = rows.keySet().iterator();
                     Slot leegSlot = rows.get(it.next()).getEmptySlot();
 
-                    //Collision met outputgantry vermijden
+                    //TODO: Collision met outputgantry vermijden
+
+                    if(!outputGantry.isWorking()){
+
+                    } else System.out.println("Working outputGantry without outputs or digging");
+
+
                     if(collision(gantries.get(0),gantries.get(1),leegSlot,safetyDistance)){
                         solution.add(new Move(gantries,1,leegSlot.getCenterX()+safetyDistance,gantries.get(1).getyPostion(),0));
                     }
 
+
                     //InputKraan verplaatsen naar bestemming
-                    solution.add(new Move(gantries,0,leegSlot.getCenterX(),leegSlot.getCenterY(),0));
+                    inputGantry.move(leegSlot,time);
+
                     //item neerleggen
-                    leegSlot.setItem(gantries.get(0).getItemInCrane());
-                    itemToSlot.put(gantries.get(0).getItemInCrane().getId(),leegSlot);
-                    gantries.get(0).setItemInCrane(null);
-                    solution.add(new Move(gantries,0,leegSlot.getCenterX(),leegSlot.getCenterY(),pickupPlaceDuration));
+                    inputGantry.drop(pickupPlaceDuration);
+                    leegSlot.setItem(inputGantry.getItemInCrane());
+                    itemToSlot.put(inputGantry.getItemInCrane().getId(),leegSlot);
+
                     //kijken of het slot ondetussen gevuld is met het outputItem, zoniet opnieuw inputjobs afhandelen
             		slot=itemToSlot.get(outputItem.getId());
         	}
@@ -440,6 +456,14 @@ public class Problem2 {
 
         System.out.println("---------Opgelost----------");
         return solution;
+    }
+
+    private void updateCurrentTime() {
+        double lowestTime = Integer.MAX_VALUE;
+        for (Gantry g: gantries){
+            if(g.isWorking() && g.getTime()<lowestTime) lowestTime=g.getTime();
+        }
+        time = lowestTime;
     }
 
     private boolean collision(Gantry van, Gantry tussen, Slot naar, int safetyDistance) {

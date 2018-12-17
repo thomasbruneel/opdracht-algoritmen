@@ -4,18 +4,23 @@ public class CraneState {
 	
 	private int x;
 	private int y;
-	private int t;
-	private int itemId;
-	
-	
+	private double t;
+	private Item item;
 
-	public CraneState(int x, int y, int t, int itemId) {
+	public CraneState(int x, int y, double t, Item item) {
 		this.x = x;
 		this.y = y;
 		this.t = t;
-		this.itemId = itemId;
+		this.item = item;
 	}
-	
+
+	public CraneState(int startX, int startY, double time) {
+		this.x = startX;
+		this.y = startY;
+		this.t = time;
+		this.item = null;
+	}
+
 	//getters en setters
 	public int getX() {
 		return x;
@@ -29,17 +34,17 @@ public class CraneState {
 	public void setY(int y) {
 		this.y = y;
 	}
-	public int getT() {
+	public double getT() {
 		return t;
 	}
-	public void setT(int t) {
+	public void setT(double t) {
 		this.t = t;
 	}
-	public int getItemId() {
-		return itemId;
+	public Item getItemId() {
+		return item;
 	}
-	public void setItemId(int itemId) {
-		this.itemId = itemId;
+	public void setItemId(Item itemId) {
+		this.item = itemId;
 	}
 	
 	
