@@ -20,6 +20,14 @@ public class CraneState {
 		this.t = time;
 		this.item = null;
 	}
+	
+	public CraneState(CraneState cs){
+		this.x=cs.x;
+		this.y=cs.y;
+		this.t=cs.t;
+		this.item=cs.item;
+		
+	}
 
 	//getters en setters
 	public int getX() {
