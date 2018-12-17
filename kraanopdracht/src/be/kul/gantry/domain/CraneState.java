@@ -13,13 +13,6 @@ public class CraneState {
 		this.t = t;
 		this.item = item;
 	}
-
-	public CraneState(int x, int y, double time) {
-		this.x = x;
-		this.y = y;
-		this.t = time;
-		this.item = null;
-	}
 	
 	public CraneState(CraneState cs){
 		this.x=cs.x;

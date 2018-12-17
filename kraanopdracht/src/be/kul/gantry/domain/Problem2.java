@@ -351,9 +351,10 @@ public class Problem2 {
 
         int inputIndex=0;
 
-        Job outputJob = null;
-        Item outputItem = null;
-        Slot slot = null;
+        //assume: !outputjobList.isEmpty()
+        Job outputJob = outputjobIT.next();
+        Item outputItem = outputJob.getItem();
+        Slot slot = itemToSlot.get(outputItem.getId());
         ArrayList<Slot> overlappingSlots = new ArrayList<>();
 
         Slot buried_slot = null;
@@ -369,7 +370,7 @@ public class Problem2 {
                     //Gantry selecteren en verplaatsen naar eerste inputslot
                     if(inputGantry.getTime() <= outputGantry.getTime()){
                         movecautiousIN(inputGantry,outputGantry,slot_blocking);
-                        inputGantry.moveTo(slot_blocking);          //TODO: mogelijks collision
+                        inputGantry.moveTo(slot_blocking);
                         inputGantry.pickup(slot_blocking.getItem(), pickupPlaceDuration);
                         itemToSlot.remove(slot_blocking.getItem().getId());
                         slot_blocking.setItem(null);
@@ -383,7 +384,7 @@ public class Problem2 {
                         inputGantry.drop(pickupPlaceDuration);
                     } else {
                         movecautiousOUT(outputGantry,inputGantry,slot_blocking);
-                        outputGantry.moveTo(slot_blocking);         //TODO: mogelijks collision
+                        outputGantry.moveTo(slot_blocking);
                         outputGantry.pickup(slot_blocking.getItem(), pickupPlaceDuration);
                         itemToSlot.remove(slot_blocking.getItem().getId());
                         slot_blocking.setItem(null);
@@ -397,16 +398,25 @@ public class Problem2 {
                         outputGantry.drop(pickupPlaceDuration);
                     }
 
-                    outputGantry.moveTo(buried_slot);               //TODO: mogelijke collision
-                    outputGantry.pickup(buried_slot.getItem(), pickupPlaceDuration);
-                    itemToSlot.remove(buried_slot.getItem().getId());
-                    buried_slot.setItem(null);
-                    outputGantry.moveTo(outputslot);
-                    outputGantry.drop(pickupPlaceDuration);
-                    
                 }
+                movecautiousOUT(outputGantry,inputGantry,buried_slot);
+                if(buried_slot==null){
+                    System.out.println("null?");
+                }
+                outputGantry.moveTo(buried_slot);
+                outputGantry.pickup(buried_slot.getItem(), pickupPlaceDuration);
+                itemToSlot.remove(buried_slot.getItem().getId());
+                buried_slot.setItem(null);
+                outputGantry.moveTo(outputslot);
+                outputGantry.drop(pickupPlaceDuration);
+
+                outputJob = null;
+                outputItem = null;
+                buried_slot = null;
+
+                System.out.println("Overlapping gedaan");
             } else {
-                if (outputjobIT.hasNext()) { //TODO: vw verbeteren
+                if (outputjobIT.hasNext() && slot != null) {
                     if (inputjobIT.hasNext()) {
                         //while(!overlappingSlots.isEmpty() && outputjobIT.hasNext() && inputjobIT.hasNext() && geenOnbestaandItem)
                         //TODO: inputs en outputs simultaan verwerken
@@ -415,52 +425,56 @@ public class Problem2 {
                     		
                     		Job job=inputjobIT.next();
                         	Item inputItem=job.getItem();
-                        	
+
                         	inputGantry.moveTo(inputslot);
                         	inputGantry.pickup(inputItem, pickupPlaceDuration);
-                        	
-                        	if(!it.hasNext()) it = rows.keySet().iterator();
+
+                            if (!it.hasNext()) it = rows.keySet().iterator();
                             Slot leegSlot = rows.get(it.next()).getEmptySlot();
+
+                            movecautiousIN(inputGantry,outputGantry,leegSlot);
                         	inputGantry.moveTo(leegSlot);
                         	
                         	inputGantry.drop(pickupPlaceDuration);
                         	
                             leegSlot.setItem(inputItem);
                             itemToSlot.put(inputItem.getId(),leegSlot);
-                    		
-                    	}
+
+                            System.out.println("IN/OUT: IN");
+
+                        }
                     	
                     	else{
-                    		
-                    		if(outputJob==null){
-                        		outputJob=outputjobIT.next();
-                        	}
-                        	else{
-                        		outputItem=outputJob.getItem();
-                            	slot=itemToSlot.get(outputItem.getId());
-                            	if(slot!=null){			//als slot leeg is, eerst inputjobs doen
-                            		overlappingSlots = rows.get(slot.getCenterY()).findOverlapping(slot.getXMin(), slot.getXMax(), slot.getZ());
-                                	if(overlappingSlots.isEmpty()){
-                                		movecautiousIN(inputGantry,outputGantry,slot);
-                                		outputGantry.moveTo(slot);
-                                    	outputGantry.pickup(outputItem, pickupPlaceDuration);
-                                    	outputGantry.moveTo(outputslot);
-                                    	outputGantry.drop(pickupPlaceDuration);
+                    	    if(outputItem == null) {
+                                outputJob = outputjobIT.next();
+                                outputItem = outputJob.getItem();
+                            }
+                            slot=itemToSlot.get(outputItem.getId());
+                            if(slot!=null){			//als slot leeg is, eerst inputjobs doen
+                                overlappingSlots = rows.get(slot.getCenterY()).findOverlapping(slot.getXMin(), slot.getXMax(), slot.getZ());
+                                if(overlappingSlots.isEmpty()){
+                               		movecautiousOUT(outputGantry,inputGantry,slot);
+                               		outputGantry.moveTo(slot);
+                                   	outputGantry.pickup(outputItem, pickupPlaceDuration);
+                                   	outputGantry.moveTo(outputslot);
+                                   	outputGantry.drop(pickupPlaceDuration);
                                     	
-                                    	outputJob=null;
-                                	}
-                                	
-                            	}
-                        		
-                        	}
-                    		
-                    	}
+                                   	outputJob=null;
+                                   	outputItem=null;
 
+                                    System.out.println("IN/OUT: OUT");
+                                } else {
+                                    buried_slot = slot;
+                                }
+                                	
+                           	}
+                    	}
                     } else {
                         while(!overlappingSlots.isEmpty() && outputjobIT.hasNext()) {
-                            //TODO: enkel output
-                            if (outputJob == null) {
+                            //TODO: enkel output -> move priorityOUT
+                            if(outputItem == null) {
                                 outputJob = outputjobIT.next();
+                                outputItem = outputJob.getItem();
                             } else {
                                 outputItem = outputJob.getItem();
                                 slot = itemToSlot.get(outputItem.getId());
@@ -473,11 +487,15 @@ public class Problem2 {
                                         outputGantry.drop(pickupPlaceDuration);
 
                                         outputJob = null;
+                                        outputItem = null;
+                                    } else {
+                                        buried_slot = slot;
                                     }
 
                                 }
 
                             }
+                            System.out.println("OUT");
                         }
                     	
                     	
@@ -485,7 +503,7 @@ public class Problem2 {
                     }
                 } else {
                     //while(inputjobIT.hasNext() && !begravenItemGevonden)
-                    //TODO: enkel inputs
+                    //TODO: enkel inputs -> move_priorityIN
                 	if(inputjobIT.hasNext()){
                 		Job job=inputjobIT.next();
                     	Item inputItem=job.getItem();
@@ -495,22 +513,25 @@ public class Problem2 {
                     	
                     	if(!it.hasNext()) it = rows.keySet().iterator();
                         Slot leegSlot = rows.get(it.next()).getEmptySlot();
-                    	inputGantry.moveTo(leegSlot);
+                    	inputGantry.moveTo(leegSlot);       //TODO: move_priority_IN
                     	
                     	inputGantry.drop(pickupPlaceDuration);
                     	
                         leegSlot.setItem(inputItem);
                         itemToSlot.put(inputItem.getId(),leegSlot);
+                        if(outputItem.getId()==inputItem.getId()) slot = itemToSlot.get(outputItem.getId());
+                        outputGantry.start(inputGantry.getTime());
                 	}
-                	
-                	
-                	
+
+
+                    System.out.println("IN");
+
                 }
             }
         }
 
 
-
+/*
             if(outputjobIT.hasNext()){
                 outputJob = outputjobIT.next();
                 outputItem = outputJob.getItem();
@@ -650,6 +671,8 @@ public class Problem2 {
             solution.add(new Move(gantries,0,leegSlot.getCenterX(),leegSlot.getCenterY(),pickupPlaceDuration));
 
         }
+
+        */
         ArrayList<Move>oplossing=merge(inputGantry,outputGantry);
         System.out.println("---------Opgelost----------");
         return oplossing;
@@ -664,7 +687,7 @@ public class Problem2 {
 
             for(int i=0; i < inputstates.size()-2; i++){
                 double time_past = Math.max(Math.abs(lastState.getX()-slotTo.getCenterX())/outputGantry.getxSpeed(),Math.abs(lastState.getY()-slotTo.getCenterY())/outputGantry.getYSpeed());
-                CraneState attempt = new CraneState(slotTo.getCenterX(),slotTo.getCenterY(),lastState.getT() + time_past);
+                CraneState attempt = new CraneState(slotTo.getCenterX(),slotTo.getCenterY(),lastState.getT() + time_past, outputGantry.getItemInCrane());
 
                 Line2D attemptLine = new Line2D.Double(new Point2D.Double(lastState.getX(),lastState.getT()),new Point2D.Double(attempt.getX(),attempt.getT()));
                 Line2D inputLine = new Line2D.Double(new Point2D.Double(inputstates.get(i).getX()+safetyDistance,inputstates.get(i).getT()),new Point2D.Double(inputstates.get(i+1).getX()+safetyDistance,inputstates.get(i+1).getT()));
@@ -677,10 +700,10 @@ public class Problem2 {
                     inbetweenMoves.removeAll(toRemove);
                     if(inbetweenMoves.isEmpty()){
                         double time_past2 = Math.max(Math.abs(outputGantry.getxPosition()-inputstates.get(i+1).getX())/outputGantry.getxSpeed(),Math.abs(outputGantry.getyPostion()-inputstates.get(i+1).getY())/outputGantry.getYSpeed());
-                        inbetweenMoves.add(new CraneState(inputstates.get(i+1).getX(),inputstates.get(i+1).getY(),outputGantry.getTime()+time_past2));
+                        inbetweenMoves.add(new CraneState(inputstates.get(i+1).getX(),inputstates.get(i+1).getY(),outputGantry.getTime()+time_past2,outputGantry.getItemInCrane()));
                     } else {
                         double time_past2 = Math.max(Math.abs(lastState.getX()-inputstates.get(i+1).getX())/outputGantry.getxSpeed(),Math.abs(lastState.getY()-inputstates.get(i+1).getY())/outputGantry.getYSpeed());
-                        inbetweenMoves.add(new CraneState(inputstates.get(i+1).getX(),inputstates.get(i+1).getY(),lastState.getT()+time_past2));
+                        inbetweenMoves.add(new CraneState(inputstates.get(i+1).getX(),inputstates.get(i+1).getY(),lastState.getT()+time_past2,outputGantry.getItemInCrane()));
                     }
                     lastState = inbetweenMoves.get(inbetweenMoves.size()-1);
                 } else break;
@@ -706,7 +729,7 @@ public class Problem2 {
 
             for(int i=0; i < outputstates.size()-2; i++){
                 double time_past = Math.max(Math.abs(lastState.getX()-slotTo.getCenterX())/inputGantry.getxSpeed(),Math.abs(lastState.getY()-slotTo.getCenterY())/inputGantry.getYSpeed());
-                CraneState attempt = new CraneState(slotTo.getCenterX(),slotTo.getCenterY(),lastState.getT() + time_past);
+                CraneState attempt = new CraneState(slotTo.getCenterX(),slotTo.getCenterY(),lastState.getT() + time_past,inputGantry.getItemInCrane());
 
                 Line2D attemptLine = new Line2D.Double(new Point2D.Double(lastState.getX(),lastState.getT()),new Point2D.Double(attempt.getX(),attempt.getT()));
                 Line2D outputLine = new Line2D.Double(new Point2D.Double(outputstates.get(i).getX()-safetyDistance,outputstates.get(i).getT()),new Point2D.Double(outputstates.get(i+1).getX()-safetyDistance,outputstates.get(i+1).getT()));
@@ -720,10 +743,10 @@ public class Problem2 {
 
                     if(inbetweenMoves.isEmpty()){
                         double time_past2 = Math.max(Math.abs(inputGantry.getxPosition()-outputstates.get(i+1).getX())/inputGantry.getxSpeed(),Math.abs(inputGantry.getyPostion()-outputstates.get(i+1).getY())/inputGantry.getYSpeed());
-                        inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX(),outputstates.get(i+1).getY(),inputGantry.getTime()+time_past2));
+                        inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX(),outputstates.get(i+1).getY(),inputGantry.getTime()+time_past2,inputGantry.getItemInCrane()));
                     } else {
                         double time_past2 = Math.max(Math.abs(lastState.getX()-outputstates.get(i+1).getX())/inputGantry.getxSpeed(),Math.abs(lastState.getY()-outputstates.get(i+1).getY())/inputGantry.getYSpeed());
-                        inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX(),outputstates.get(i+1).getY(),lastState.getT()+time_past2));
+                        inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX(),outputstates.get(i+1).getY(),lastState.getT()+time_past2,inputGantry.getItemInCrane()));
 
                     }
 

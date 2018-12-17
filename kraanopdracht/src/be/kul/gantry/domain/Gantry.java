@@ -38,7 +38,8 @@ public class Gantry {
         this.isWorking = false;
         this.time = 0;
         this.states=new ArrayList<CraneState>();
-        states.add(new CraneState(startX,startY,time));
+        this.itemInCrane = null;
+        states.add(new CraneState(startX,startY,time,itemInCrane));
 
     }
 
@@ -129,13 +130,13 @@ public class Gantry {
 
 	public void start(double t){
         this.isWorking=true;
-        states.add(new CraneState(xPosition,yPostion,t));
+        states.add(new CraneState(xPosition,yPostion,t,itemInCrane));
         time = t;
     }
 
     public void start(){
 	    this.isWorking=true;
-	    states.add(new CraneState(xPosition,yPostion,states.get(states.size()-1).getT()));
+	    states.add(new CraneState(xPosition,yPostion,states.get(states.size()-1).getT(),itemInCrane));
     }
 
     public void stop(){
@@ -170,25 +171,26 @@ public class Gantry {
         start(currentTime); //positie voor bewegen vastleggen
 
         double time_past = Math.max(Math.abs(xPosition-slot.getCenterX())/xSpeed,Math.abs(yPostion-slot.getCenterY())/ySpeed);
-        states.add(new CraneState(slot.getCenterX(),slot.getCenterY(),currentTime+time_past));
+        states.add(new CraneState(slot.getCenterX(),slot.getCenterY(),currentTime+time_past,itemInCrane));
         time = currentTime+time_past;
     }
 
     public void pickup(Item item, int pickupPluceDuration) {
         itemInCrane = item;
-        states.add(new CraneState(xPosition,yPostion,states.get(states.size()-1).getT()+pickupPluceDuration));
+        states.add(new CraneState(xPosition,yPostion,states.get(states.size()-1).getT()+pickupPluceDuration,itemInCrane));
         time += pickupPluceDuration;
     }
 
     public void drop(int pickupPlaceDuration) {
-        states.add(new CraneState(xPosition,yPostion,states.get(states.size()-1).getT()+pickupPlaceDuration));
         itemInCrane = null;
         time += pickupPlaceDuration;
+        states.add(new CraneState(xPosition,yPostion,time, itemInCrane));
+
     }
 
     public void moveTo(Slot slot) {
         double time_past = Math.max(Math.abs(xPosition-slot.getCenterX())/xSpeed,Math.abs(yPostion-slot.getCenterY())/ySpeed);
-        states.add(new CraneState(slot.getCenterX(),slot.getCenterY(),states.get(states.size()-1).getT()+time_past));
+        states.add(new CraneState(slot.getCenterX(),slot.getCenterY(),states.get(states.size()-1).getT()+time_past,itemInCrane));
         time = time+time_past;
         xPosition = slot.getCenterX();
         yPostion = slot.getCenterY();
