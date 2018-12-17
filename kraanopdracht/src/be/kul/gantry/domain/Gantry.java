@@ -1,6 +1,7 @@
 package be.kul.gantry.domain;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Wim on 27/04/2015.
@@ -191,5 +192,21 @@ public class Gantry {
         time = time+time_past;
         xPosition = slot.getCenterX();
         yPostion = slot.getCenterY();
+    }
+
+    public List<CraneState> getStates(double time) {
+        List<CraneState> futureStates = new ArrayList<>();
+        int counter = states.size()-1;
+        while(counter > 0 && states.get(counter).getT() > time) {
+            futureStates.add(0, states.get(counter));
+            counter--;
+        }
+        futureStates.add(0, states.get(counter));
+
+        return futureStates;
+    }
+
+    public CraneState getLastCranestate() {
+        return states.get(states.size()-1);
     }
 }

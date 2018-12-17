@@ -14,9 +14,9 @@ public class CraneState {
 		this.item = item;
 	}
 
-	public CraneState(int startX, int startY, double time) {
-		this.x = startX;
-		this.y = startY;
+	public CraneState(int x, int y, double time) {
+		this.x = x;
+		this.y = y;
 		this.t = time;
 		this.item = null;
 	}

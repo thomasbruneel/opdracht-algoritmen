@@ -7,6 +7,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
@@ -354,8 +356,6 @@ public class Problem2 {
         Slot slot = null;
         ArrayList<Slot> overlappingSlots = new ArrayList<>();
         Slot buried_slot = null;
-
-        //Todo: programmaflow veranderen
         //voldoende voorwaarde?
         while (outputjobIT.hasNext() || inputjobIT.hasNext()) {
             //staat bepalen
@@ -367,6 +367,7 @@ public class Problem2 {
                     Slot slot_blocking = overlappingSlots.remove(0);
                     //Gantry selecteren en verplaatsen naar eerste inputslot
                     if(inputGantry.getTime() <= outputGantry.getTime()){
+                        movecautiousIN(inputGantry,outputGantry,slot_blocking);
                         inputGantry.moveTo(slot_blocking);          //TODO: mogelijks collision
                         inputGantry.pickup(slot_blocking.getItem(), pickupPlaceDuration);
                         itemToSlot.remove(slot_blocking.getItem().getId());
@@ -380,6 +381,7 @@ public class Problem2 {
                         inputGantry.moveTo(leegSlot);
                         inputGantry.drop(pickupPlaceDuration);
                     } else {
+                        movecautiousOUT(outputGantry,inputGantry,slot_blocking);
                         outputGantry.moveTo(slot_blocking);         //TODO: mogelijks collision
                         outputGantry.pickup(slot_blocking.getItem(), pickupPlaceDuration);
                         itemToSlot.remove(slot_blocking.getItem().getId());
@@ -561,6 +563,34 @@ public class Problem2 {
         ArrayList<Move>oplossing=merge(inputGantry,outputGantry);
         System.out.println("---------Opgelost----------");
         return oplossing;
+    }
+
+    private void movecautiousOUT(Gantry outputGantry, Gantry inputGantry, Slot slotTo) {
+
+    }
+
+    private void movecautiousIN(Gantry inputGantry, Gantry outputGantry, Slot slotTo) {
+        List<CraneState> outputstates = outputGantry.getStates(inputGantry.getTime());
+        if(!(outputstates.size()>1) || outputstates.get(outputstates.size()-1).getT() > inputGantry.getTime()){
+            CraneState lastState = new CraneState(inputGantry.getLastCranestate());
+            List<CraneState> inbetweenMoves = new ArrayList<>();
+            inbetweenMoves.add(new CraneState(lastState));
+
+            double time_past = Math.max(Math.abs(lastState.getX()-slotTo.getCenterX())/inputGantry.getxSpeed(),Math.abs(lastState.getY()-slotTo.getCenterY())/inputGantry.getYSpeed());
+            CraneState attempt = new CraneState(slotTo.getCenterX(),slotTo.getCenterY(),inputGantry.getTime() + inputGantry.getTime()+time_past);
+
+            for(int i=0; i < outputstates.size()-2; i++){
+                Line2D attemptLine = new Line2D.Double(new Point2D.Double(lastState.getX(),lastState.getT()),new Point2D.Double(attempt.getX(),attempt.getT()));
+                Line2D outputLine = new Line2D.Double(new Point2D.Double(outputstates.get(i).getX(),outputstates.get(i).getT()),new Point2D.Double(outputstates.get(i+1).getX(),outputstates.get(i+1).getT()));
+
+                if(attemptLine.intersectsLine(outputLine)){
+                    double time_past2 = Math.max(Math.abs(lastState.getX()-outputstates.get(i+1).getX())/inputGantry.getxSpeed(),Math.abs(lastState.getY()-outputstates.get(i+1).getY())/inputGantry.getYSpeed());
+
+                    inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX()-(safetyDistance+1),outputstates.get(i+1).getY(),inputGantry.getTime()+time_past2));
+                    
+                }
+            }
+        }
     }
 
     private Gantry getLatestGantry(Gantry inputGantry, Gantry outputGantry) {
