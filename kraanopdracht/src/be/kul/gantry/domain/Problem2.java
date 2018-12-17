@@ -437,12 +437,28 @@ public class Problem2 {
         	
         }
 
-
         System.out.println("---------Opgelost----------");
         return solution;
     }
 
-    private boolean collision(Gantry van, Gantry tussen, Slot naar, int safetyDistance) {
+    private ArrayList<Move> merge(List<Gantry> gantries, Gantry inputGantry, Gantry outputGantry) {
+    	ArrayList<CraneState>inputStates=inputGantry.getStates();
+    	ArrayList<CraneState>outputStates=outputGantry.getStates();
+    	
+		ArrayList<Move>moves = new ArrayList<>();
+		for(CraneState craneStateInput:inputStates){
+			
+			
+		}
+		inputStates.sort((CraneState c1,CraneState c2)->c1.getT()-c2.getT());
+		outputStates.sort((CraneState c1,CraneState c2)->c1.getT()-c2.getT());
+		
+		
+		
+		return null;
+	}
+
+	private boolean collision(Gantry van, Gantry tussen, Slot naar, int safetyDistance) {
         if(van.getId() == 0){
             return tussen.getxPosition() < naar.getCenterX()+safetyDistance;
         } else return tussen.getxPosition() > naar.getCenterX()-safetyDistance;
