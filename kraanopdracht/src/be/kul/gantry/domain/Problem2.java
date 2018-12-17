@@ -355,6 +355,7 @@ public class Problem2 {
         Item outputItem = null;
         Slot slot = null;
         ArrayList<Slot> overlappingSlots = new ArrayList<>();
+
         Slot buried_slot = null;
         //voldoende voorwaarde?
         while (outputjobIT.hasNext() || inputjobIT.hasNext()) {
@@ -620,20 +621,39 @@ public class Problem2 {
             List<CraneState> inbetweenMoves = new ArrayList<>();
             inbetweenMoves.add(new CraneState(lastState));
 
-            double time_past = Math.max(Math.abs(lastState.getX()-slotTo.getCenterX())/inputGantry.getxSpeed(),Math.abs(lastState.getY()-slotTo.getCenterY())/inputGantry.getYSpeed());
-            CraneState attempt = new CraneState(slotTo.getCenterX(),slotTo.getCenterY(),inputGantry.getTime() + inputGantry.getTime()+time_past);
 
             for(int i=0; i < outputstates.size()-2; i++){
+                double time_past = Math.max(Math.abs(lastState.getX()-slotTo.getCenterX())/inputGantry.getxSpeed(),Math.abs(lastState.getY()-slotTo.getCenterY())/inputGantry.getYSpeed());
+                CraneState attempt = new CraneState(slotTo.getCenterX(),slotTo.getCenterY(),inputGantry.getTime() + inputGantry.getTime()+time_past);
+
                 Line2D attemptLine = new Line2D.Double(new Point2D.Double(lastState.getX(),lastState.getT()),new Point2D.Double(attempt.getX(),attempt.getT()));
                 Line2D outputLine = new Line2D.Double(new Point2D.Double(outputstates.get(i).getX(),outputstates.get(i).getT()),new Point2D.Double(outputstates.get(i+1).getX(),outputstates.get(i+1).getT()));
 
                 if(attemptLine.intersectsLine(outputLine)){
-                    double time_past2 = Math.max(Math.abs(lastState.getX()-outputstates.get(i+1).getX())/inputGantry.getxSpeed(),Math.abs(lastState.getY()-outputstates.get(i+1).getY())/inputGantry.getYSpeed());
+                    List<CraneState> toRemove = new ArrayList<>();
+                    for(CraneState c : inbetweenMoves){
+                        if(c.getX()<outputstates.get(i+1).getX()-(safetyDistance+1)) toRemove.add(c);
+                    }
+                    inbetweenMoves.removeAll(toRemove);
 
-                    inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX()-(safetyDistance+1),outputstates.get(i+1).getY(),inputGantry.getTime()+time_past2));
-                    
-                }
+                    if(inbetweenMoves.isEmpty()){
+                        double time_past2 = Math.max(Math.abs(inputGantry.getxPosition()-outputstates.get(i+1).getX())/inputGantry.getxSpeed(),Math.abs(inputGantry.getyPostion()-outputstates.get(i+1).getY())/inputGantry.getYSpeed());
+                        inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX()-(safetyDistance+1),outputstates.get(i+1).getY(),inputGantry.getTime()+time_past2));
+                    } else {
+                        double time_past2 = Math.max(Math.abs(lastState.getX()-outputstates.get(i+1).getX())/inputGantry.getxSpeed(),Math.abs(lastState.getY()-outputstates.get(i+1).getY())/inputGantry.getYSpeed());
+                        inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX()-(safetyDistance+1),outputstates.get(i+1).getY(),lastState.getT()+time_past2));
+
+                    }
+
+                    lastState = inbetweenMoves.get(inbetweenMoves.size()-1);
+
+                } else break;
             }
+            inputGantry.getStates().addAll(inbetweenMoves);
+            inputGantry.setTime(lastState.getT());
+            inputGantry.setxPosition(lastState.getX());
+            inputGantry.setyPostion(lastState.getY());
+
         }
     }
 
