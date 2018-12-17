@@ -452,27 +452,32 @@ public class Problem2 {
             solution.add(new Move(gantries,0,leegSlot.getCenterX(),leegSlot.getCenterY(),pickupPlaceDuration));
 
         }
-
+        ArrayList<Move>oplossing=merge(inputGantry,outputGantry);
         System.out.println("---------Opgelost----------");
-        return solution;
+        return oplossing;
     }
 
 
-    private ArrayList<Move> merge(List<Gantry> gantries, Gantry inputGantry, Gantry outputGantry) {
+    private ArrayList<Move> merge(Gantry inputGantry, Gantry outputGantry) {
     	ArrayList<CraneState>inputStates=inputGantry.getStates();
     	ArrayList<CraneState>outputStates=outputGantry.getStates();
 
 		ArrayList<Move>moves = new ArrayList<>();
+		
 		for(CraneState craneStateInput:inputStates){
-
-
+			moves.add(new Move(inputGantry,craneStateInput));
 		}
-		inputStates.sort((CraneState c1,CraneState c2)->c1.getT()-c2.getT());
-		outputStates.sort((CraneState c1,CraneState c2)->c1.getT()-c2.getT());
+		for(CraneState CraneStateOutput:outputStates){
+			moves.add(new Move(outputGantry,CraneStateOutput));
+		}
+		
+		Collections.sort(moves, new Comparator<Move>(){
+			public int compare(Move m1, Move m2){
+				return (int) (m1.getT()-m2.getT());
+			}
+		});
 
-
-
-		return null;
+		return moves;
 	}
 
     private void updateCurrentTime() {
