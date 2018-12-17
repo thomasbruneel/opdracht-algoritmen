@@ -402,6 +402,7 @@ public class Problem2 {
                     buried_slot.setItem(null);
                     outputGantry.moveTo(outputslot);
                     outputGantry.drop(pickupPlaceDuration);
+                    
                 }
             } else {
                 if (outputjobIT.hasNext()) {
@@ -411,10 +412,53 @@ public class Problem2 {
                     } else {
                         //while(!overlappingSlots.isEmpty() && outputjobIT.hasNext())
                         //TODO: enkel output
+                    	if(outputJob==null){
+                    		outputJob=outputjobIT.next();
+                    	}
+                    	else{
+                    		outputItem=outputJob.getItem();
+                        	slot=itemToSlot.get(outputItem.getId());
+                        	if(slot!=null){			//als slot leeg is, eerst inputjobs doen
+                        		overlappingSlots = rows.get(slot.getCenterY()).findOverlapping(slot.getXMin(), slot.getXMax(), slot.getZ());
+                            	if(overlappingSlots.isEmpty()){
+                            		outputGantry.moveTo(slot);
+                                	outputGantry.pickup(outputItem, pickupPlaceDuration);
+                                	outputGantry.moveTo(outputslot);
+                                	outputGantry.drop(pickupPlaceDuration);
+                                	
+                                	outputJob=null;
+                            	}
+                            	
+                        	}
+                    		
+                    	}
+                    	
+                    	
+                    	
+
                     }
                 } else {
                     //while(inputjobIT.hasNext() && !begravenItemGevonden)
                     //TODO: enkel inputs
+                	if(inputjobIT.hasNext()){
+                		Job job=inputjobIT.next();
+                    	Item inputItem=job.getItem();
+                    	
+                    	inputGantry.moveTo(inputslot);
+                    	inputGantry.pickup(inputItem, pickupPlaceDuration);
+                    	
+                    	if(!it.hasNext()) it = rows.keySet().iterator();
+                        Slot leegSlot = rows.get(it.next()).getEmptySlot();
+                    	inputGantry.moveTo(leegSlot);
+                    	
+                    	inputGantry.drop(pickupPlaceDuration);
+                    	
+                        leegSlot.setItem(inputItem);
+                        itemToSlot.put(inputItem.getId(),leegSlot);
+                	}
+                	
+                	
+                	
                 }
             }
         }
