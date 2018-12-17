@@ -410,6 +410,52 @@ public class Problem2 {
                     if (inputjobIT.hasNext()) {
                         //while(!overlappingSlots.isEmpty() && outputjobIT.hasNext() && inputjobIT.hasNext() && geenOnbestaandItem)
                         //TODO: inputs en outputs simultaan verwerken
+                    	Gantry gantry =getLatestGantry(inputGantry, outputGantry);
+                    	if(gantry.getId()==inputGantry.getId()){
+                    		
+                    		Job job=inputjobIT.next();
+                        	Item inputItem=job.getItem();
+                        	
+                        	inputGantry.moveTo(inputslot);
+                        	inputGantry.pickup(inputItem, pickupPlaceDuration);
+                        	
+                        	if(!it.hasNext()) it = rows.keySet().iterator();
+                            Slot leegSlot = rows.get(it.next()).getEmptySlot();
+                        	inputGantry.moveTo(leegSlot);
+                        	
+                        	inputGantry.drop(pickupPlaceDuration);
+                        	
+                            leegSlot.setItem(inputItem);
+                            itemToSlot.put(inputItem.getId(),leegSlot);
+                    		
+                    	}
+                    	
+                    	else{
+                    		
+                    		if(outputJob==null){
+                        		outputJob=outputjobIT.next();
+                        	}
+                        	else{
+                        		outputItem=outputJob.getItem();
+                            	slot=itemToSlot.get(outputItem.getId());
+                            	if(slot!=null){			//als slot leeg is, eerst inputjobs doen
+                            		overlappingSlots = rows.get(slot.getCenterY()).findOverlapping(slot.getXMin(), slot.getXMax(), slot.getZ());
+                                	if(overlappingSlots.isEmpty()){
+                                		movecautiousIN(inputGantry,outputGantry,slot);
+                                		outputGantry.moveTo(slot);
+                                    	outputGantry.pickup(outputItem, pickupPlaceDuration);
+                                    	outputGantry.moveTo(outputslot);
+                                    	outputGantry.drop(pickupPlaceDuration);
+                                    	
+                                    	outputJob=null;
+                                	}
+                                	
+                            	}
+                        		
+                        	}
+                    		
+                    	}
+
                     } else {
                         //while(!overlappingSlots.isEmpty() && outputjobIT.hasNext())
                         //TODO: enkel output
