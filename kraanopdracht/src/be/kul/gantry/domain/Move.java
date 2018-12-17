@@ -9,7 +9,7 @@ public class Move {
 	private int y;
 	private Item itemInCrane;
 	
-	
+
 	public Move(List<Gantry> gantries,int index,int x,int y,double extraTime){
 		this.gID=index;
 		this.x=x;
@@ -33,6 +33,16 @@ public class Move {
 			gantries.get(0).setTime(T);
 		}
 		//-----
+	}
+
+	
+	public Move(Gantry gantry,CraneState craneState){
+		this.gID=gantry.getId();
+		this.x=craneState.getX();
+		this.y=craneState.getY();
+		this.T=craneState.getT();
+		this.itemInCrane=gantry.getItemInCrane();
+		
 	}
 	//exacte notatie voor wegschrijven naar csv file
 	public String toString(){

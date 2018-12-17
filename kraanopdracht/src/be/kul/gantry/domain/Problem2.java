@@ -26,7 +26,7 @@ public class Problem2 {
     private final List<Slot> slots;
     private final int safetyDistance;
     private final int pickupPlaceDuration;
-    
+
     private HashMap<Integer,Slot> itemToSlot;
 
     private double time;
@@ -99,7 +99,7 @@ public class Problem2 {
     public int getPickupPlaceDuration() {
         return pickupPlaceDuration;
     }
-    
+
 
     public HashMap<Integer, Slot> getItemToSlot() {
 		return itemToSlot;
@@ -226,9 +226,9 @@ public class Problem2 {
             int overallMinY = Integer.MAX_VALUE, overallMaxY = Integer.MIN_VALUE;
 
             JSONArray slots = (JSONArray) root.get("slots");
-            
+
             HashMap<Integer,Slot>itemToSlot=new HashMap<>();
-            
+
             for(Object o : slots) {
                 JSONObject slot = (JSONObject) o;
 
@@ -252,7 +252,7 @@ public class Problem2 {
 
                 Slot s = new Slot(id,cx,cy,minX,maxX,minY,maxY,z,type,c);
                 slotList.add(s);
-                
+
                 //itemID toekennen aan slot als slot een item bevat
                 if(c!=null){
                 	itemToSlot.put(c.getId(),s);
@@ -313,7 +313,7 @@ public class Problem2 {
                     inputJobList,
                     outputJobList,
                     safetyDist,
-                    pickupPlaceDuration, 
+                    pickupPlaceDuration,
                     itemToSlot);
         }
     }
@@ -327,7 +327,7 @@ public class Problem2 {
         Slot inputslot = new Slot(-1,-1,-1,-1,-1,-1,-1,-1,Slot.SlotType.STORAGE,null),outputslot = new Slot(-1,-1,-1,-1,-1,-1,-1,-1,Slot.SlotType.STORAGE,null);
         Gantry inputGantry=gantries.get(0);
         Gantry outputGantry=gantries.get(1);
-        
+
 
         Map<Integer,SlotTree> rows = new HashMap<>();
         for (Slot s : slots){
@@ -528,14 +528,65 @@ public class Problem2 {
 
             }
 
+        // als alle outputjobs klaar zijn, de rest van de inputjobs verwerken
+        for(int i=inputIndex;i<inputJobSequence.size();i++){
 
+        	Job inputJob=inputJobSequence.get(i);
+
+            //inputjobs verwerken..
+
+            //InputKraan verplaatsen naar inputslot
+            solution.add(new Move(gantries,0,inputslot.getCenterX(),inputslot.getCenterY(),0));
+            //item oppikken van inputslot
+            gantries.get(0).setItemInCrane(inputJob.getItem());
+            solution.add(new Move(gantries,0,inputslot.getCenterX(),inputslot.getCenterY(),pickupPlaceDuration));
+            //Bestemming nieuw item bepalen
+            if(!it.hasNext()) it = rows.keySet().iterator();
+            Slot leegSlot = rows.get(it.next()).getEmptySlot();
+
+            //Collisioncheck
+            if(collision(gantries.get(0),gantries.get(1),leegSlot,safetyDistance)){
+                solution.add(new Move(gantries,1,leegSlot.getCenterX()+safetyDistance,gantries.get(1).getyPostion(),0));
+            }
+
+            //InputKraan verplaatsen naar bestemming
+            solution.add(new Move(gantries,0,leegSlot.getCenterX(),leegSlot.getCenterY(),0));
+            //item neerleggen
+            leegSlot.setItem(gantries.get(0).getItemInCrane());
+            itemToSlot.put(gantries.get(0).getItemInCrane().getId(),leegSlot);
+            gantries.get(0).setItemInCrane(null);
+            solution.add(new Move(gantries,0,leegSlot.getCenterX(),leegSlot.getCenterY(),pickupPlaceDuration));
+
+        }
+        ArrayList<Move>oplossing=merge(inputGantry,outputGantry);
         System.out.println("---------Opgelost----------");
-        return solution;
+        return oplossing;
     }
 
     private Gantry getLatestGantry(Gantry inputGantry, Gantry outputGantry) {
         return inputGantry.getTime()<outputGantry.getTime() ? inputGantry : outputGantry;
     }
+    private ArrayList<Move> merge(Gantry inputGantry, Gantry outputGantry) {
+    	ArrayList<CraneState>inputStates=inputGantry.getStates();
+    	ArrayList<CraneState>outputStates=outputGantry.getStates();
+
+		ArrayList<Move>moves = new ArrayList<>();
+		
+		for(CraneState craneStateInput:inputStates){
+			moves.add(new Move(inputGantry,craneStateInput));
+		}
+		for(CraneState CraneStateOutput:outputStates){
+			moves.add(new Move(outputGantry,CraneStateOutput));
+		}
+		
+		Collections.sort(moves, new Comparator<Move>(){
+			public int compare(Move m1, Move m2){
+				return (int) (m1.getT()-m2.getT());
+			}
+		});
+
+		return moves;
+	}
 
     private void updateCurrentTime() {
         double lowestTime = Integer.MAX_VALUE;
