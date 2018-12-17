@@ -17,6 +17,7 @@ public class Gantry {
     private int yPostion;
     private double time;
     private Item itemInCrane;
+    private boolean isWorking;
     
     private ArrayList<CraneState> states;
 
@@ -33,7 +34,11 @@ public class Gantry {
         this.ySpeed = ySpeed;
         this.xPosition = startX;
         this.yPostion = startY;
+        this.isWorking = false;
+        this.time = 0;
         this.states=new ArrayList<CraneState>();
+        states.add(new CraneState(startX,startY,time));
+
     }
 
     public int getId() {
@@ -121,6 +126,20 @@ public class Gantry {
 		this.states = states;
 	}
 
+	public void start(double t){
+        this.isWorking=true;
+        states.add(new CraneState(xPosition,yPostion,t));
+        time = t;
+    }
+
+    public void stop(){
+	    this.isWorking=false;
+    }
+
+    public boolean isWorking(){
+        return isWorking;
+    }
+
 	public boolean overlapsGantryArea(Gantry g) {
         return g.xMin < xMax && xMin < g.xMax;
     }
@@ -138,5 +157,23 @@ public class Gantry {
 
     public boolean canReachSlot(Slot s) {
         return xMin <= s.getCenterX() && s.getCenterX() <= xMax;
+    }
+
+    public void move(Slot slot, double currentTime) {
+        start(currentTime); //positie voor bewegen vastleggen
+
+        double time_past = Math.max(Math.abs(xPosition-slot.getCenterX())/xSpeed,Math.abs(yPostion-slot.getCenterY())/ySpeed);
+        states.add(new CraneState(slot.getCenterX(),slot.getCenterY(),currentTime+time_past));
+        time = currentTime+time_past;
+    }
+
+    public void pickup(Item item, int pickupPluceDuration) {
+        itemInCrane = item;
+        states.add(new CraneState(xPosition,yPostion,states.get(states.size()-1).getT()+pickupPluceDuration));
+    }
+
+    public void drop(int pickupPlaceDuration) {
+        states.add(new CraneState(xPosition,yPostion,states.get(states.size()-1).getT()+pickupPlaceDuration));
+        itemInCrane = null;
     }
 }
