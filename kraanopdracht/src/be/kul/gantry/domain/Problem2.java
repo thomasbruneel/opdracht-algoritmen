@@ -476,8 +476,9 @@ public class Problem2 {
 
         //Alle bovenliggende slots bepalen
         ArrayList<Slot> overlappingSlots = rows.get(slot.getCenterY()).findOverlapping(slot.getXMin(), slot.getXMax(), slot.getZ());
+        //System.out.println(overlappingSlots);
         for(Slot s:overlappingSlots){
-            removeOverlappingSlots(s,rows,solution,it,gantries,itemToSlot,pickupPlaceDuration);
+            //removeOverlappingSlots(s,rows,solution,it,gantries,itemToSlot,pickupPlaceDuration);
 
             //Dichtste kraan selecteren
             int gantryindex = getClosestGantry(gantries,s);
