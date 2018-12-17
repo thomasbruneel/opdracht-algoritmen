@@ -132,6 +132,11 @@ public class Gantry {
         time = t;
     }
 
+    public void start(){
+	    this.isWorking=true;
+	    states.add(new CraneState(xPosition,yPostion,states.get(states.size()-1).getT()));
+    }
+
     public void stop(){
 	    this.isWorking=false;
     }
@@ -159,6 +164,7 @@ public class Gantry {
         return xMin <= s.getCenterX() && s.getCenterX() <= xMax;
     }
 
+    //nieGoe
     public void move(Slot slot, double currentTime) {
         start(currentTime); //positie voor bewegen vastleggen
 
@@ -170,10 +176,20 @@ public class Gantry {
     public void pickup(Item item, int pickupPluceDuration) {
         itemInCrane = item;
         states.add(new CraneState(xPosition,yPostion,states.get(states.size()-1).getT()+pickupPluceDuration));
+        time += pickupPluceDuration;
     }
 
     public void drop(int pickupPlaceDuration) {
         states.add(new CraneState(xPosition,yPostion,states.get(states.size()-1).getT()+pickupPlaceDuration));
         itemInCrane = null;
+        time += pickupPlaceDuration;
+    }
+
+    public void moveTo(Slot slot) {
+        double time_past = Math.max(Math.abs(xPosition-slot.getCenterX())/xSpeed,Math.abs(yPostion-slot.getCenterY())/ySpeed);
+        states.add(new CraneState(slot.getCenterX(),slot.getCenterY(),states.get(states.size()-1).getT()+time_past));
+        time = time+time_past;
+        xPosition = slot.getCenterX();
+        yPostion = slot.getCenterY();
     }
 }
