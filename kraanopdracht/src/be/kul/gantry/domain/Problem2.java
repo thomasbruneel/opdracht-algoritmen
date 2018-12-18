@@ -522,6 +522,8 @@ public class Problem2 {
             }
 
         }
+        inputGantry.moveTo(inputslot);
+        outputGantry.moveTo(outputslot);
         ArrayList<Move>oplossing=merge(inputGantry,outputGantry);
         System.out.println("---------Opgelost----------");
         return oplossing;

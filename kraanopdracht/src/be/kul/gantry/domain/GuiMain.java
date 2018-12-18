@@ -25,10 +25,10 @@ public class GuiMain extends Application {
     lineChart.setTitle("grafiek");
     
     XYChart.Series<Number, Number> series1 = new XYChart.Series<Number, Number>();
-    series1.setName("kraan1");
+    series1.setName("InputKraan");
     
     XYChart.Series<Number, Number> series2 = new XYChart.Series<Number, Number>();
-    series2.setName("kraan2");
+    series2.setName("OutputKraan");
 
     Scene scene = new Scene(lineChart, 2000, 1000);
 
