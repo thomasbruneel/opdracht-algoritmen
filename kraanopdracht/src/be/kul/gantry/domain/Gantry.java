@@ -175,13 +175,13 @@ public class Gantry {
         time = currentTime+time_past;
     }
 
-    public void pickup(Item item, int pickupPluceDuration) {
+    public void pickup(Item item, double pickupPluceDuration) {
         itemInCrane = item;
         states.add(new CraneState(xPosition,yPostion,states.get(states.size()-1).getT()+pickupPluceDuration,itemInCrane));
         time += pickupPluceDuration;
     }
 
-    public void drop(int pickupPlaceDuration) {
+    public void drop(double pickupPlaceDuration) {
         itemInCrane = null;
         time += pickupPlaceDuration;
         states.add(new CraneState(xPosition,yPostion,time, itemInCrane));

@@ -9,7 +9,6 @@ import org.json.simple.parser.ParseException;
 
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -26,8 +25,8 @@ public class Problem2 {
 
     private final List<Gantry> gantries;
     private final List<Slot> slots;
-    private final int safetyDistance;
-    private final int pickupPlaceDuration;
+    private final double safetyDistance;
+    private final double pickupPlaceDuration;
 
     private HashMap<Integer,Slot> itemToSlot;
 
@@ -94,11 +93,11 @@ public class Problem2 {
         return slots;
     }
 
-    public int getSafetyDistance() {
+    public double getSafetyDistance() {
         return safetyDistance;
     }
 
-    public int getPickupPlaceDuration() {
+    public double getPickupPlaceDuration() {
         return pickupPlaceDuration;
     }
 
@@ -367,7 +366,7 @@ public class Problem2 {
                     Slot slot_blocking = overlappingSlots.remove(0);
                     //Gantry selecteren en verplaatsen naar eerste inputslot
                     if(inputGantry.getTime() <= outputGantry.getTime()){
-                        movecautiousIN(inputGantry,outputGantry,slot_blocking);
+                        moveIN(inputGantry,outputGantry,slot_blocking);
                         inputGantry.moveTo(slot_blocking);
                         inputGantry.pickup(slot_blocking.getItem(), pickupPlaceDuration);
                         itemToSlot.remove(slot_blocking.getItem().getId());
@@ -375,7 +374,7 @@ public class Problem2 {
                         //Bestemming nieuw item bepalen
                         if (!it.hasNext()) it = rows.keySet().iterator();
                         Slot leegSlot = rows.get(it.next()).getEmptySlot();
-                        movecautiousIN(inputGantry,outputGantry,leegSlot);
+                        moveIN(inputGantry,outputGantry,leegSlot);
                         inputGantry.moveTo(leegSlot);
                         inputGantry.drop(pickupPlaceDuration);
                     } else {
@@ -423,7 +422,7 @@ public class Problem2 {
                             if (!it.hasNext()) it = rows.keySet().iterator();
                             Slot leegSlot = rows.get(it.next()).getEmptySlot();
 
-                            movecautiousIN(inputGantry,outputGantry,leegSlot);
+                            moveIN(inputGantry,outputGantry,leegSlot);
                         	inputGantry.moveTo(leegSlot);
                         	
                         	inputGantry.drop(pickupPlaceDuration);
@@ -504,7 +503,7 @@ public class Problem2 {
                     	
                     	if(!it.hasNext()) it = rows.keySet().iterator();
                         Slot leegSlot = rows.get(it.next()).getEmptySlot();
-                        movecautiousIN(inputGantry,outputGantry,leegSlot);
+                        moveIN(inputGantry,outputGantry,leegSlot);
                     	inputGantry.moveTo(leegSlot);       //TODO: move_priority_IN
                     	
                     	inputGantry.drop(pickupPlaceDuration);
@@ -551,13 +550,19 @@ public class Problem2 {
                     inbetweenMoves.removeAll(toRemove);
                     if(inbetweenMoves.isEmpty()){
                         double time_past2 = Math.max(Math.abs(outputGantry.getxPosition()-inputstates.get(i+1).getX())/outputGantry.getxSpeed(),Math.abs(outputGantry.getyPostion()-inputstates.get(i+1).getY())/outputGantry.getYSpeed());
-                        inbetweenMoves.add(new CraneState(inputstates.get(i+1).getX()+safetyDistance,inputstates.get(i+1).getY(),outputGantry.getTime()+time_past2,outputGantry.getItemInCrane()));
+                        inbetweenMoves.add(new CraneState(inputstates.get(i+1).getX()+(int)safetyDistance,inputstates.get(i+1).getY(),outputGantry.getTime()+time_past2,outputGantry.getItemInCrane()));
+                        inbetweenMoves.add(new CraneState(inputstates.get(i+1).getX()+(int)safetyDistance,inputstates.get(i+1).getY(),inputstates.get(i+1).getT(),outputGantry.getItemInCrane()));
+                        inbetweenMoves.add(new CraneState(inputstates.get(i+1).getX()+(int)safetyDistance,inputstates.get(i+1).getY(),inputstates.get(i+1).getT()+pickupPlaceDuration,outputGantry.getItemInCrane()));
+
                     } else {
                         double time_past2 = Math.max(Math.abs(lastState.getX()-inputstates.get(i+1).getX())/outputGantry.getxSpeed(),Math.abs(lastState.getY()-inputstates.get(i+1).getY())/outputGantry.getYSpeed());
-                        inbetweenMoves.add(new CraneState(inputstates.get(i+1).getX()+safetyDistance,inputstates.get(i+1).getY(),lastState.getT()+time_past2,outputGantry.getItemInCrane()));
+                        inbetweenMoves.add(new CraneState(inputstates.get(i+1).getX()+(int)safetyDistance,inputstates.get(i+1).getY(),lastState.getT()+time_past2,outputGantry.getItemInCrane()));
+                        inbetweenMoves.add(new CraneState(inputstates.get(i+1).getX()+(int)safetyDistance,inputstates.get(i+1).getY(),inputstates.get(i+1).getT(),outputGantry.getItemInCrane()));
+                        inbetweenMoves.add(new CraneState(inputstates.get(i+1).getX()+(int)safetyDistance,inputstates.get(i+1).getY(),inputstates.get(i+1).getT()+pickupPlaceDuration,outputGantry.getItemInCrane()));
+
                     }
                     lastState = inbetweenMoves.get(inbetweenMoves.size()-1);
-                } else break;
+                }
 
 
             }
@@ -592,16 +597,21 @@ public class Problem2 {
                     inbetweenMoves.removeAll(toRemove);
                     if(inbetweenMoves.isEmpty()){
                         double time_past2 = Math.max(Math.abs(inputGantry.getxPosition()-(outputstates.get(i+1).getX()-safetyDistance))/inputGantry.getxSpeed(),-666);
-                        inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX()-safetyDistance,inputGantry.getyPostion(),inputGantry.getTime()+time_past2,inputGantry.getItemInCrane()));
+                        inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX()-(int)safetyDistance,inputGantry.getyPostion(),inputGantry.getTime()+time_past2,inputGantry.getItemInCrane()));
+                        inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX()-(int)safetyDistance,inputGantry.getyPostion(),outputstates.get(i+1).getT(),inputGantry.getItemInCrane()));
+                        inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX()-(int)safetyDistance,inputGantry.getyPostion(),outputstates.get(i+1).getT()+pickupPlaceDuration,inputGantry.getItemInCrane()));
+
                     } else {
                         double time_past2 = Math.max(Math.abs(lastState.getX()-(outputstates.get(i+1).getX()-safetyDistance))/inputGantry.getxSpeed(),-666);
-                        inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX()-safetyDistance,inputGantry.getyPostion(),lastState.getT()+time_past2,inputGantry.getItemInCrane()));
+                        inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX()-(int)safetyDistance,inputGantry.getyPostion(),lastState.getT()+time_past2,inputGantry.getItemInCrane()));
+                        inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX()-(int)safetyDistance,inputGantry.getyPostion(),outputstates.get(i+1).getT(),inputGantry.getItemInCrane()));
+                        inbetweenMoves.add(new CraneState(outputstates.get(i+1).getX()-(int)safetyDistance,inputGantry.getyPostion(),outputstates.get(i+1).getT()+pickupPlaceDuration,inputGantry.getItemInCrane()));
 
                     }
 
                     lastState = inbetweenMoves.get(inbetweenMoves.size()-1);
 
-                } else break;
+                }
             }
             inputGantry.getStates().addAll(inbetweenMoves);
             inputGantry.setTime(lastState.getT());
@@ -609,6 +619,80 @@ public class Problem2 {
             inputGantry.setyPostion(lastState.getY());
 
         }
+    }
+
+    //Opgeroepen wanneer in richting out beweegt => om iets op te pakken of af te zetten
+    public void moveIN(Gantry inputGantry, Gantry outputGantry, Slot s){
+        System.out.println("moveIN");
+        //relevante states van outputGantry opvragen
+        List<CraneState> outStates = outputGantry.getStates(inputGantry.getTime());
+        CraneState lastState = inputGantry.getLastCranestate();
+        List<CraneState> detour = new ArrayList<>();
+
+        while(!outStates.isEmpty()){
+            //Attempt opstellen
+            //tijd van huidige toestand naar attempt(rechtstreeks naar slot)
+            double attemptTime = Math.max(Math.abs(lastState.getX()-s.getCenterX())/inputGantry.getxSpeed(),Math.abs(lastState.getY()-s.getCenterY())/inputGantry.getYSpeed());
+            CraneState attempt = new CraneState(s.getCenterX(),s.getCenterY(),lastState.getT()+attemptTime,inputGantry.getItemInCrane());
+
+            //Relevante outstates verzamelen
+            List<CraneState> obstacles = new ArrayList<>();
+            int relevantIndex = -1;
+            for (CraneState c: outStates){
+                if (c.getT()<attempt.getT()) relevantIndex = outStates.indexOf(c);
+            }
+            if(relevantIndex==outStates.size()-1) obstacles = outStates;
+            else obstacles = outStates.subList(0,relevantIndex+2);
+
+            //intersection met attemptlijn controleren + extra pickup of droptijd in rekening brengen
+            boolean intersection = false;
+            Line2D attemptLine = new Line2D.Double(new Point2D.Double(lastState.getX(),lastState.getT()),new Point2D.Double(attempt.getX(),attempt.getT()));
+            Line2D pickDropLine = new Line2D.Double(new Point2D.Double(attempt.getX(),attempt.getT()),new Point2D.Double(attempt.getX(),attempt.getT()+pickupPlaceDuration));
+
+            for (int i=0; i<obstacles.size()-1 && !intersection; i++){   //SAFETYDISTANCE!!!
+                Line2D obstacleLine = new Line2D.Double(new Point2D.Double(obstacles.get(i).getX()-safetyDistance,obstacles.get(i).getT()),new Point2D.Double(obstacles.get(i+1).getX()-safetyDistance,obstacles.get(i+1).getT()));
+                if(attemptLine.intersectsLine(obstacleLine) || pickDropLine.intersectsLine(obstacleLine)) intersection = true;
+            }
+
+
+            //De kraan omleiden/laten wachten om een nieuwe poging te ondernemen
+            if(intersection){
+                //Laagste punt in obstakelstates zoeken
+                CraneState lowest = new CraneState(Integer.MAX_VALUE,0,0,null);
+                for (CraneState c: obstacles){
+                    if(c.getT()>lastState.getT()) {
+                        lowest = c.getX() < lowest.getX() ? c : lowest;
+                    }
+                }
+                double detourTime = Math.max(Math.abs(lastState.getX()-(lowest.getX()-safetyDistance))/inputGantry.getxSpeed(),-666); //y moet nie veranderen
+                //kan mss in 1 move?
+                detour.add(new CraneState(lowest.getX()-(int)safetyDistance,lastState.getY(),lastState.getT()+detourTime,lastState.getItem()));
+                lastState = new CraneState(lowest.getX()-(int)safetyDistance,lastState.getY(),lowest.getT(),lastState.getItem());
+                detour.add(lastState);
+                //laatste item niet verwijderen!
+                if(obstacles.size()!=outStates.size()) {
+                    outStates.removeAll(obstacles.subList(0, obstacles.size() - 1));
+                } else outStates.removeAll(obstacles);
+            } else {
+                inputGantry.getStates().addAll(detour);
+                inputGantry.setxPosition(lastState.getX());
+                inputGantry.setyPostion(lastState.getY());
+                inputGantry.setTime(lastState.getT());
+                inputGantry.setItemInCrane(lastState.getItem());
+                return;
+            }
+
+        }
+        inputGantry.getStates().addAll(detour);
+        inputGantry.setxPosition(lastState.getX());
+        inputGantry.setyPostion(lastState.getY());
+        inputGantry.setTime(lastState.getT());
+        inputGantry.setItemInCrane(lastState.getItem());
+
+    }
+
+    public void moveOUT(Gantry outputGantry, Gantry inputGantry, Slot s){
+
     }
 
     private Gantry getLatestGantry(Gantry inputGantry, Gantry outputGantry) {
@@ -644,7 +728,7 @@ public class Problem2 {
         time = lowestTime;
     }
 
-    private boolean collision(Gantry van, Gantry tussen, Slot naar, int safetyDistance) {
+    private boolean collision(Gantry van, Gantry tussen, Slot naar, double safetyDistance) {
         if(van.getId() == 0){
             return tussen.getxPosition() < naar.getCenterX()+safetyDistance;
         } else return tussen.getxPosition() > naar.getCenterX()-safetyDistance;
@@ -665,12 +749,12 @@ public class Problem2 {
             if(gantryindex == 0){
                 //Collision met outputkraan vermijden
                 if(collision(gantries.get(0),gantries.get(1),s,safetyDistance)){
-                    solution.add(new Move(gantries,1,s.getCenterX()+safetyDistance,gantries.get(1).getyPostion(),0));
+                    solution.add(new Move(gantries,1,s.getCenterX()+(int)safetyDistance,gantries.get(1).getyPostion(),0));
                 }
             } else{
                 //Collision met InputKraan vermijden
                 if(collision(gantries.get(1),gantries.get(0),s,safetyDistance)){
-                    solution.add(new Move(gantries,0,s.getCenterX()-safetyDistance,gantries.get(0).getyPostion(),0));
+                    solution.add(new Move(gantries,0,s.getCenterX()-(int)safetyDistance,gantries.get(0).getyPostion(),0));
                 }
             }
 
@@ -692,12 +776,12 @@ public class Problem2 {
             if(gantryindex == 0){
                 //Collision met outputkraan vermijden
                 if(collision(gantries.get(0),gantries.get(1),leegSlot,safetyDistance)){
-                    solution.add(new Move(gantries,1,leegSlot.getCenterX()+safetyDistance,gantries.get(1).getyPostion(),0));
+                    solution.add(new Move(gantries,1,leegSlot.getCenterX()+(int)safetyDistance,gantries.get(1).getyPostion(),0));
                 }
             } else{
                 //Collision met inputkraan vermijden
                 if(collision(gantries.get(1),gantries.get(0),leegSlot,safetyDistance)){
-                    solution.add(new Move(gantries,0,leegSlot.getCenterX()-safetyDistance,gantries.get(0).getyPostion(),0));
+                    solution.add(new Move(gantries,0,leegSlot.getCenterX()-(int)safetyDistance,gantries.get(0).getyPostion(),0));
                 }
             }
 

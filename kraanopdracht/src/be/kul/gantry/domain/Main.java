@@ -17,7 +17,8 @@ public class Main {
 		Long begin = System.currentTimeMillis();
 		
 		Problem2 p = Problem2.fromJson(new File(inputFile));
-		ArrayList<Move> solution = p.solve();
+        System.out.println("Start solve");
+        ArrayList<Move> solution = p.solve();
 		BufferedWriter bw=new BufferedWriter(new FileWriter(outputFile));
 		bw.write("\"gID\";\"T\";\"x\";\"y\";\"itemInCraneID\"");
         try {
