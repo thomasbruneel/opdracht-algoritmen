@@ -378,7 +378,7 @@ public class Problem2 {
                         inputGantry.moveTo(leegSlot);
                         inputGantry.drop(pickupPlaceDuration);
                     } else {
-                        movecautiousOUT(outputGantry,inputGantry,slot_blocking);
+                        moveOUT(outputGantry,inputGantry,slot_blocking);
                         outputGantry.moveTo(slot_blocking);
                         outputGantry.pickup(slot_blocking.getItem(), pickupPlaceDuration);
                         itemToSlot.remove(slot_blocking.getItem().getId());
@@ -386,12 +386,12 @@ public class Problem2 {
                         //Bestemming nieuw item bepalen
                         if (!it.hasNext()) it = rows.keySet().iterator();
                         Slot leegSlot = rows.get(it.next()).getEmptySlot();
-                        movecautiousOUT(outputGantry,inputGantry,leegSlot);
+                        moveOUT(outputGantry,inputGantry,leegSlot);
                         outputGantry.moveTo(leegSlot);
                         outputGantry.drop(pickupPlaceDuration);
                     }
                 }
-                movecautiousOUT(outputGantry,inputGantry,buried_slot);
+                moveOUT(outputGantry,inputGantry,buried_slot);
                 outputGantry.moveTo(buried_slot);
                 outputGantry.pickup(buried_slot.getItem(), pickupPlaceDuration);
                 itemToSlot.remove(buried_slot.getItem().getId());
@@ -443,7 +443,7 @@ public class Problem2 {
                             if(slot!=null){			//als slot leeg is, eerst inputjobs doen
                                 overlappingSlots = rows.get(slot.getCenterY()).findOverlapping(slot.getXMin(), slot.getXMax(), slot.getZ());
                                 if(overlappingSlots.isEmpty()){
-                               		movecautiousOUT(outputGantry,inputGantry,slot);
+                               		moveOUT(outputGantry,inputGantry,slot);
                                		outputGantry.moveTo(slot);
                                    	outputGantry.pickup(outputItem, pickupPlaceDuration);
                                    	outputGantry.moveTo(outputslot);
@@ -472,7 +472,7 @@ public class Problem2 {
                                 if (slot != null) {            //als slot leeg is, eerst inputjobs doen
                                     overlappingSlots = rows.get(slot.getCenterY()).findOverlapping(slot.getXMin(), slot.getXMax(), slot.getZ());
                                     if (overlappingSlots.isEmpty()) {
-                                        movecautiousOUT(outputGantry,inputGantry,slot);
+                                        moveOUT(outputGantry,inputGantry,slot);
                                         outputGantry.moveTo(slot);
                                         outputGantry.pickup(outputItem, pickupPlaceDuration);
                                         outputGantry.moveTo(outputslot);
@@ -692,6 +692,68 @@ public class Problem2 {
     }
 
     public void moveOUT(Gantry outputGantry, Gantry inputGantry, Slot s){
+        System.out.println("moveOUT");
+        //relevante states inputgantry opvragen
+        List<CraneState> inStates = inputGantry.getStates(outputGantry.getTime());
+        CraneState lastState = outputGantry.getLastCranestate();
+        List<CraneState> detour = new ArrayList<>();
+
+        while(!inStates.isEmpty()){
+            //Attempt opstellen
+            double attemptTime = Math.max(Math.abs(lastState.getX()-s.getCenterX())/outputGantry.getXSpeed(),Math.abs(lastState.getY()-s.getCenterY())/outputGantry.getYSpeed());
+            CraneState attempt = new CraneState(s.getCenterX(),s.getCenterY(),lastState.getT()+attemptTime,lastState.getItem());
+
+            //Relevante instates verzamelen
+            List<CraneState> obstacles = new ArrayList<>();
+            int relevantIndex = -1;
+            for (CraneState c: inStates){
+                if (c.getT()<attempt.getT()) relevantIndex = inStates.indexOf(c);
+            }
+            if(relevantIndex==inStates.size()-1) obstacles = inStates;
+            else obstacles = inStates.subList(0,relevantIndex+2);
+
+            //intersection met attemptlijn controleren + extra pickup of droptijd in rekening brengen
+            boolean intersection = false;
+            Line2D attemptLine = new Line2D.Double(new Point2D.Double(lastState.getX(),lastState.getT()),new Point2D.Double(attempt.getX(),attempt.getT()));
+            Line2D pickDropLine = new Line2D.Double(new Point2D.Double(attempt.getX(),attempt.getT()),new Point2D.Double(attempt.getX(),attempt.getT()+pickupPlaceDuration));
+
+            for (int i=0; i<obstacles.size()-1 && !intersection; i++){   //SAFETYDISTANCE!!!
+                Line2D obstacleLine = new Line2D.Double(new Point2D.Double(obstacles.get(i).getX()+safetyDistance,obstacles.get(i).getT()),new Point2D.Double(obstacles.get(i+1).getX()+safetyDistance,obstacles.get(i+1).getT()));
+                if(attemptLine.intersectsLine(obstacleLine) || pickDropLine.intersectsLine(obstacleLine)) intersection = true;
+            }
+
+            if(intersection){
+                //hoogste state binnen obstakels zoeken
+                CraneState highest = new CraneState(Integer.MIN_VALUE,0,0,null);
+                for (CraneState c: obstacles){
+                    if(c.getT()<lastState.getT()) {
+                        highest = c.getX() > highest.getX() ? c : highest;
+                    }
+                }
+                double detourTime = Math.max(Math.abs(lastState.getX()-(highest.getX()+safetyDistance))/outputGantry.getxSpeed(),-666);
+                //kan mss in 1 move?
+                detour.add(new CraneState(highest.getX()+(int)safetyDistance,lastState.getY(),lastState.getT()+detourTime,lastState.getItem()));
+                lastState = new CraneState(highest.getX()+(int)safetyDistance,lastState.getY(),highest.getT(),lastState.getItem());
+                detour.add(lastState);
+                //laatste item niet verwijderen!
+                if(obstacles.size()!=inStates.size()) {
+                    inStates.removeAll(obstacles.subList(0, obstacles.size() - 1));
+                } else inStates.removeAll(obstacles);
+            } else {
+                outputGantry.getStates().addAll(detour);
+                outputGantry.setxPosition(lastState.getX());
+                outputGantry.setyPostion(lastState.getY());
+                outputGantry.setTime(lastState.getT());
+                outputGantry.setItemInCrane(lastState.getItem());
+                return;
+            }
+
+        }
+        outputGantry.getStates().addAll(detour);
+        outputGantry.setxPosition(lastState.getX());
+        outputGantry.setyPostion(lastState.getY());
+        outputGantry.setTime(lastState.getT());
+        outputGantry.setItemInCrane(lastState.getItem());
 
     }
 
