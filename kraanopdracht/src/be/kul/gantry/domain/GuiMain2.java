@@ -105,19 +105,19 @@ public class GuiMain2 extends Application {
 	}
 
     private NumberAxis createXAxis() {
-        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis xAxis = new NumberAxis(0,20000,200);
 	    xAxis.setAutoRanging(false);
-	    xAxis.setLowerBound(0);
-	    xAxis.setUpperBound(20000);
+	    //xAxis.setLowerBound(0);
+	    //xAxis.setUpperBound(20000);
 	    xAxis.setLabel("time");
         return xAxis;
     }
     
     private NumberAxis createYAxis() {
-        final NumberAxis yAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis(0,1100,200);
 	    yAxis.setAutoRanging(false);
-	    yAxis.setLowerBound(0);
-	    yAxis.setUpperBound(1100);
+	    //yAxis.setLowerBound(0);
+	    //yAxis.setUpperBound(1100);
 	    yAxis.setLabel("x");
         return yAxis;
     }
