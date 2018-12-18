@@ -41,10 +41,10 @@ public class CraneState {
 	public void setT(double t) {
 		this.t = t;
 	}
-	public Item getItemId() {
+	public Item getItem() {
 		return item;
 	}
-	public void setItemId(Item itemId) {
+	public void setItem(Item itemId) {
 		this.item = itemId;
 	}
 	

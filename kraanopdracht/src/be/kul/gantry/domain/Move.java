@@ -41,7 +41,7 @@ public class Move {
 		this.x=craneState.getX();
 		this.y=craneState.getY();
 		this.T=craneState.getT();
-		this.itemInCrane=gantry.getItemInCrane();
+		this.itemInCrane=craneState.getItem();
 		
 	}
 	//exacte notatie voor wegschrijven naar csv file

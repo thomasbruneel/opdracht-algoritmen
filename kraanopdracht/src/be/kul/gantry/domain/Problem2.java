@@ -363,8 +363,6 @@ public class Problem2 {
             //staat bepalen
             if (!overlappingSlots.isEmpty()) {
                 //STAAT: Uitgraven
-                outputGantry.start();
-                inputGantry.start();
                 while(!overlappingSlots.isEmpty()){
                     Slot slot_blocking = overlappingSlots.remove(0);
                     //Gantry selecteren en verplaatsen naar eerste inputslot
@@ -375,11 +373,9 @@ public class Problem2 {
                         itemToSlot.remove(slot_blocking.getItem().getId());
                         slot_blocking.setItem(null);
                         //Bestemming nieuw item bepalen
-                        Slot leegSlot =outputslot;
-                        while(leegSlot.getCenterX()>inputGantry.getxPosition()) {
-                            if (!it.hasNext()) it = rows.keySet().iterator();
-                            leegSlot = rows.get(it.next()).getEmptySlot();
-                        }
+                        if (!it.hasNext()) it = rows.keySet().iterator();
+                        Slot leegSlot = rows.get(it.next()).getEmptySlot();
+                        movecautiousIN(inputGantry,outputGantry,leegSlot);
                         inputGantry.moveTo(leegSlot);
                         inputGantry.drop(pickupPlaceDuration);
                     } else {
@@ -389,20 +385,14 @@ public class Problem2 {
                         itemToSlot.remove(slot_blocking.getItem().getId());
                         slot_blocking.setItem(null);
                         //Bestemming nieuw item bepalen
-                        Slot leegSlot = inputslot;
-                        while(leegSlot.getCenterX()<inputGantry.getxPosition()) {
-                            if (!it.hasNext()) it = rows.keySet().iterator();
-                            leegSlot = rows.get(it.next()).getEmptySlot();
-                        }
+                        if (!it.hasNext()) it = rows.keySet().iterator();
+                        Slot leegSlot = rows.get(it.next()).getEmptySlot();
+                        movecautiousOUT(outputGantry,inputGantry,leegSlot);
                         outputGantry.moveTo(leegSlot);
                         outputGantry.drop(pickupPlaceDuration);
                     }
-
                 }
                 movecautiousOUT(outputGantry,inputGantry,buried_slot);
-                if(buried_slot==null){
-                    System.out.println("null?");
-                }
                 outputGantry.moveTo(buried_slot);
                 outputGantry.pickup(buried_slot.getItem(), pickupPlaceDuration);
                 itemToSlot.remove(buried_slot.getItem().getId());
@@ -418,6 +408,7 @@ public class Problem2 {
             } else {
                 if (outputjobIT.hasNext() && slot != null) {
                     if (inputjobIT.hasNext()) {
+                        //STAAT: SIMULTAAN IN EN OUT
                         //while(!overlappingSlots.isEmpty() && outputjobIT.hasNext() && inputjobIT.hasNext() && geenOnbestaandItem)
                         //TODO: inputs en outputs simultaan verwerken
                     	Gantry gantry =getLatestGantry(inputGantry, outputGantry);
@@ -468,9 +459,10 @@ public class Problem2 {
                                 }
                                 	
                            	}
+
                     	}
                     } else {
-                        while(!overlappingSlots.isEmpty() && outputjobIT.hasNext()) {
+                        while(overlappingSlots.isEmpty() && outputjobIT.hasNext()) {
                             //TODO: enkel output -> move priorityOUT
                             if(outputItem == null) {
                                 outputJob = outputjobIT.next();
@@ -497,10 +489,8 @@ public class Problem2 {
                             }
                             System.out.println("OUT");
                         }
-                    	
-                    	
-
                     }
+                    System.out.println("Loop blijft hier steken");
                 } else {
                     //while(inputjobIT.hasNext() && !begravenItemGevonden)
                     //TODO: enkel inputs -> move_priorityIN
@@ -528,151 +518,8 @@ public class Problem2 {
 
                 }
             }
-        }
-
-
-/*
-            if(outputjobIT.hasNext()){
-                outputJob = outputjobIT.next();
-                outputItem = outputJob.getItem();
-                slot = itemToSlot.get(outputItem.getId());
-            }
-
-            if (slot == null) {} //Todo: inputJobs only!
-            else{
-
-            }
-
-
-                //als slot leeg is d.w.z. dat we eerst nog een x-aantal inputjobs moeten afwerken vooraleer we verder kunnen doen moet de outputjobs
-                while (slot == null) {
-                    outputGantry.stop();
-                    Job inputJob = inputJobSequence.get(inputIndex++);
-
-                    //inputjobs verwerken..
-
-                    //InputKraan verplaatsen naar inputslot
-                    inputGantry.start(time);
-                    inputGantry.move(inputslot, time);
-                    updateCurrentTime();
-                    //item oppikken van inputslot
-                    inputGantry.pickup(inputJob.getItem(), pickupPlaceDuration);
-
-                    //Bestemming nieuw item bepalen
-                    if (!it.hasNext()) it = rows.keySet().iterator();
-                    Slot leegSlot = rows.get(it.next()).getEmptySlot();
-
-                    //TODO: Collision met outputgantry vermijden
-
-                    if (!outputGantry.isWorking()) {
-
-                    } else System.out.println("Working outputGantry without outputs or digging");
-
-
-                    if (collision(gantries.get(0), gantries.get(1), leegSlot, safetyDistance)) {
-                        solution.add(new Move(gantries, 1, leegSlot.getCenterX() + safetyDistance, gantries.get(1).getyPostion(), 0));
-                    }
-
-
-                    //InputKraan verplaatsen naar bestemming
-                    inputGantry.move(leegSlot, time);
-
-                    //item neerleggen
-                    inputGantry.drop(pickupPlaceDuration);
-                    leegSlot.setItem(inputGantry.getItemInCrane());
-                    itemToSlot.put(inputGantry.getItemInCrane().getId(), leegSlot);
-
-                    //kijken of het slot ondetussen gevuld is met het outputItem, zoniet opnieuw inputjobs afhandelen
-                    slot = itemToSlot.get(outputItem.getId());
-                }
-
-            //outputjobs verwerken..
-
-            //Overlappende slots van slot met outputitem verplaatsen
-            removeOverlappingSlots(slot, rows, solution, it, gantries, itemToSlot, pickupPlaceDuration);
-
-            //collision met inputKraan vermijden
-            if (collision(gantries.get(1), gantries.get(0), slot, safetyDistance)) {
-                solution.add(new Move(gantries, 0, slot.getCenterX() - safetyDistance, gantries.get(0).getyPostion(), 0));
-            }
-
-            //OutputKraan verplaatsen naar slot met outputitem
-            solution.add(new Move(gantries, 1, slot.getCenterX(), slot.getCenterY(), 0));
-            //outputitem oppakken
-            gantries.get(1).setItemInCrane(outputItem);
-            itemToSlot.remove(outputItem.getId());
-            slot.setItem(null);
-            solution.add(new Move(gantries, 1, slot.getCenterX(), slot.getCenterY(), pickupPlaceDuration));
-            //Kraan naar outputslot verplaatsen
-            solution.add(new Move(gantries, 1, outputslot.getCenterX(), outputslot.getCenterY(), 0));
-            //item in outputslot neerleggen
-            gantries.get(1).setItemInCrane(null);
-            solution.add(new Move(gantries, 1, outputslot.getCenterX(), outputslot.getCenterY(), pickupPlaceDuration));
-
-
-            // als alle outputjobs klaar zijn, de rest van de inputjobs verwerken
-            for (int i = inputIndex; i < inputJobSequence.size(); i++) {
-
-                Job inputJob = inputJobSequence.get(i);
-
-                //inputjobs verwerken..
-
-                //InputKraan verplaatsen naar inputslot
-                solution.add(new Move(gantries, 0, inputslot.getCenterX(), inputslot.getCenterY(), 0));
-                //item oppikken van inputslot
-                gantries.get(0).setItemInCrane(inputJob.getItem());
-                solution.add(new Move(gantries, 0, inputslot.getCenterX(), inputslot.getCenterY(), pickupPlaceDuration));
-                //Bestemming nieuw item bepalen
-                if (!it.hasNext()) it = rows.keySet().iterator();
-                Slot leegSlot = rows.get(it.next()).getEmptySlot();
-
-                //Collisioncheck
-                if (collision(gantries.get(0), gantries.get(1), leegSlot, safetyDistance)) {
-                    solution.add(new Move(gantries, 1, leegSlot.getCenterX() + safetyDistance, gantries.get(1).getyPostion(), 0));
-                }
-
-                //InputKraan verplaatsen naar bestemming
-                solution.add(new Move(gantries, 0, leegSlot.getCenterX(), leegSlot.getCenterY(), 0));
-                //item neerleggen
-                leegSlot.setItem(gantries.get(0).getItemInCrane());
-                itemToSlot.put(gantries.get(0).getItemInCrane().getId(), leegSlot);
-                gantries.get(0).setItemInCrane(null);
-                solution.add(new Move(gantries, 0, leegSlot.getCenterX(), leegSlot.getCenterY(), pickupPlaceDuration));
-
-            }
-
-        // als alle outputjobs klaar zijn, de rest van de inputjobs verwerken
-        for(int i=inputIndex;i<inputJobSequence.size();i++){
-
-        	Job inputJob=inputJobSequence.get(i);
-
-            //inputjobs verwerken..
-
-            //InputKraan verplaatsen naar inputslot
-            solution.add(new Move(gantries,0,inputslot.getCenterX(),inputslot.getCenterY(),0));
-            //item oppikken van inputslot
-            gantries.get(0).setItemInCrane(inputJob.getItem());
-            solution.add(new Move(gantries,0,inputslot.getCenterX(),inputslot.getCenterY(),pickupPlaceDuration));
-            //Bestemming nieuw item bepalen
-            if(!it.hasNext()) it = rows.keySet().iterator();
-            Slot leegSlot = rows.get(it.next()).getEmptySlot();
-
-            //Collisioncheck
-            if(collision(gantries.get(0),gantries.get(1),leegSlot,safetyDistance)){
-                solution.add(new Move(gantries,1,leegSlot.getCenterX()+safetyDistance,gantries.get(1).getyPostion(),0));
-            }
-
-            //InputKraan verplaatsen naar bestemming
-            solution.add(new Move(gantries,0,leegSlot.getCenterX(),leegSlot.getCenterY(),0));
-            //item neerleggen
-            leegSlot.setItem(gantries.get(0).getItemInCrane());
-            itemToSlot.put(gantries.get(0).getItemInCrane().getId(),leegSlot);
-            gantries.get(0).setItemInCrane(null);
-            solution.add(new Move(gantries,0,leegSlot.getCenterX(),leegSlot.getCenterY(),pickupPlaceDuration));
 
         }
-
-        */
         ArrayList<Move>oplossing=merge(inputGantry,outputGantry);
         System.out.println("---------Opgelost----------");
         return oplossing;
