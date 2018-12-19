@@ -55,6 +55,7 @@ public class SlotTree {
     	for(Slot s:set){
     		overLappingSlots.add(s);
     	}
+    	overLappingSlots.sort(new SlotHeightComparator());
         return overLappingSlots;
     }
     
