@@ -653,7 +653,7 @@ public class Problem2 {
             List<CraneState> obstacles = new ArrayList<>();
             int relevantIndex = -1;
             for (CraneState c: outStates){
-                if (c.getT()<attempt.getT()) relevantIndex = outStates.indexOf(c);
+                if (c.getT()<attempt.getT()+pickupPlaceDuration) relevantIndex = outStates.indexOf(c);
             }
             if(relevantIndex==outStates.size()-1) obstacles = outStates;
             else obstacles = outStates.subList(0,relevantIndex+2);
@@ -681,12 +681,17 @@ public class Problem2 {
                 double detourTime = Math.max(Math.abs(lastState.getX()-(lowest.getX()-safetyDistance))/inputGantry.getxSpeed(),-666); //y moet nie veranderen
                 //kan mss in 1 move?
 
-                if(15000 > lastState.getT() && lastState.getT() > 14000){
+                if(11000 > lastState.getT() && lastState.getT() > 8000){
                     System.out.println("break");
                 }
 
                 detour.add(new CraneState(lowest.getX()-(int)safetyDistance,lastState.getY(),lastState.getT()+detourTime,inputGantry.getItemInCrane()));
-                lastState = new CraneState(lowest.getX()-(int)safetyDistance,lastState.getY(),lowest.getT(),inputGantry.getItemInCrane());
+
+                if(lastState.getT()+detourTime < lowest.getT()){
+                    lastState = new CraneState(lowest.getX()-(int)safetyDistance,lastState.getY(),lowest.getT(),inputGantry.getItemInCrane());
+
+                } else lastState = detour.get(detour.size()-1);
+
                 detour.add(lastState);
                 //laatste item niet verwijderen!
                 if(obstacles.size()!=outStates.size()) {
@@ -726,7 +731,7 @@ public class Problem2 {
             List<CraneState> obstacles = new ArrayList<>();
             int relevantIndex = -1;
             for (CraneState c: inStates){
-                if (c.getT()<attempt.getT()) relevantIndex = inStates.indexOf(c);
+                if (c.getT()<attempt.getT()+pickupPlaceDuration) relevantIndex = inStates.indexOf(c);
             }
             if(relevantIndex==inStates.size()-1) obstacles = inStates;
             else obstacles = inStates.subList(0,relevantIndex+2);
@@ -750,9 +755,16 @@ public class Problem2 {
                     }
                 }
                 double detourTime = Math.max(Math.abs(lastState.getX()-(highest.getX()+safetyDistance))/outputGantry.getxSpeed(),-666);
+
+                if(11000 > lastState.getT() && lastState.getT() > 8000){
+                    System.out.println("break");
+                }
+
                 //kan mss in 1 move?
                 detour.add(new CraneState(highest.getX()+(int)safetyDistance,lastState.getY(),lastState.getT()+detourTime,outputGantry.getItemInCrane()));
-                lastState = new CraneState(highest.getX()+(int)safetyDistance,lastState.getY(),highest.getT(),outputGantry.getItemInCrane());
+                if(!(highest.getT()<lastState.getT()+detourTime)) {
+                    lastState = new CraneState(highest.getX() + (int) safetyDistance, lastState.getY(), highest.getT(), outputGantry.getItemInCrane());
+                } else lastState = detour.get(detour.size()-1);
                 detour.add(lastState);
                 //laatste item niet verwijderen!
                 if(obstacles.size()!=inStates.size()) {
