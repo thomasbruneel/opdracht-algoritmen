@@ -361,17 +361,10 @@ public class Problem2 {
         while (!outputJobSequence.isEmpty() || inputjobIT.hasNext()) {
             //staat bepalen
 
-            if (inputGantry.getTime()>9500){
-                System.out.println("break");
-            }
-
-
             if (!overlappingSlots.isEmpty()) {
                 //STAAT: Uitgraven
                 while(!overlappingSlots.isEmpty()){
-                    if (outputGantry.getTime()>8500){
-                        System.out.println("break");
-                    }
+                  
                     Slot slot_blocking = overlappingSlots.remove(0);
                     //Gantry selecteren en verplaatsen naar eerste inputslot
                     if(inputGantry.getTime() <= outputGantry.getTime()){
@@ -426,7 +419,6 @@ public class Problem2 {
                 outputItem = null;
                 buried_slot = null;
 
-                System.out.println("Overlapping gedaan");
             } else {
                 if (!outputJobSequence.isEmpty() && slot != null) {
                     if (inputjobIT.hasNext()) {
@@ -455,7 +447,7 @@ public class Problem2 {
                             leegSlot.setItem(inputItem);
                             itemToSlot.put(inputItem.getId(),leegSlot);
 
-                            System.out.println("IN/OUT: IN");
+                            //System.out.println("IN/OUT: IN");
 
                         }
                     	
@@ -481,7 +473,7 @@ public class Problem2 {
                                    	outputJob=null;
                                    	outputItem=null;
 
-                                    System.out.println("IN/OUT: OUT");
+                                    //System.out.println("IN/OUT: OUT");
                                 } else {
                                     buried_slot = slot;
                                 }
@@ -492,10 +484,6 @@ public class Problem2 {
                     } else {
                         while(overlappingSlots.isEmpty() && !outputJobSequence.isEmpty()) {
                             //TODO: enkel output -> move priorityOUT
-
-                            if(outputGantry.getTime()>20500){
-                                System.out.println("break");
-                            }
 
                             if(outputItem == null) {
                                 outputJob = outputJobSequence.get(0);
@@ -534,10 +522,9 @@ public class Problem2 {
                                 }
 
                             }
-                            System.out.println("OUT");
+                            //System.out.println("OUT");
                         }
                     }
-                    System.out.println("Loop blijft hier steken");
                 } else {
                     //while(inputjobIT.hasNext() && !begravenItemGevonden)
                     //TODO: enkel inputs -> move_priorityIN
@@ -572,7 +559,7 @@ public class Problem2 {
                 	}
 
 
-                    System.out.println("IN");
+                    //System.out.println("IN");
 
                 }
             }
@@ -587,7 +574,7 @@ public class Problem2 {
 
     //Opgeroepen wanneer in richting out beweegt => om iets op te pakken of af te zetten
     public void moveIN(Gantry inputGantry, Gantry outputGantry, Slot s){
-        System.out.println("moveIN");
+        //System.out.println("moveIN");
         //relevante states van outputGantry opvragen
         List<CraneState> obstacles = outputGantry.getStates(inputGantry.getTime());
         CraneState lastState = inputGantry.getLastCranestate();
@@ -595,7 +582,6 @@ public class Problem2 {
 
         while(lastState.getT()<outputGantry.getTime()){
             //Attempt opstellen
-            System.out.println(inputGantry.getTime());
             double attemptTime = Math.max(Math.abs(lastState.getX()-s.getCenterX())/inputGantry.getXSpeed(),Math.abs(lastState.getY()-s.getCenterY())/inputGantry.getYSpeed());
             CraneState attempt = new CraneState(s.getCenterX(),s.getCenterY(),lastState.getT()+attemptTime,inputGantry.getItemInCrane());
 
@@ -616,10 +602,6 @@ public class Problem2 {
             if(intersection){
 
                 double detourTime = Math.max(Math.abs(lastState.getX()-(crash.getX()-safetyDistance))/inputGantry.getxSpeed(),-666);
-
-                if(11000 > lastState.getT() && lastState.getT() > 8000){
-                    System.out.println("break");
-                }
 
                 lastState = new CraneState(crash.getX()-(int)safetyDistance,crash.getY(),Math.max(lastState.getT()+detourTime,crash.getT()),inputGantry.getItemInCrane());
 
@@ -651,14 +633,13 @@ public class Problem2 {
     }
 
     public void moveOUT(Gantry outputGantry, Gantry inputGantry, Slot s){
-        System.out.println("moveOUT");
+        //System.out.println("moveOUT");
         //relevante states inputgantry opvragen
         List<CraneState> obstacles = inputGantry.getStates(outputGantry.getTime());
         CraneState lastState = outputGantry.getLastCranestate();
         List<CraneState> detour = new ArrayList<>();
 
         while(lastState.getT()<inputGantry.getTime()){
-            System.out.println("loop");
             //Attempt opstellen
             double attemptTime = Math.max(Math.abs(lastState.getX()-s.getCenterX())/outputGantry.getXSpeed(),Math.abs(lastState.getY()-s.getCenterY())/outputGantry.getYSpeed());
             CraneState attempt = new CraneState(s.getCenterX(),s.getCenterY(),lastState.getT()+attemptTime,outputGantry.getItemInCrane());
@@ -680,10 +661,6 @@ public class Problem2 {
             if(intersection){
 
                 double detourTime = Math.max(Math.abs(lastState.getX()-(crash.getX()+safetyDistance))/outputGantry.getxSpeed(),-666);
-
-                if(11000 > lastState.getT() && lastState.getT() > 8000){
-                    System.out.println("break");
-                }
 
                 lastState = new CraneState(crash.getX()+(int)safetyDistance,crash.getY(),Math.max(lastState.getT()+detourTime,crash.getT()),outputGantry.getItemInCrane());
 

@@ -11,8 +11,8 @@ import org.json.simple.parser.ParseException;
 public class Main {
 
 	public static void main(String[] args) throws IOException, ParseException {
-		String inputFile="2_10_100_4_TRUE_65_50_50.json";
-		String outputFile="output.csv";
+		String inputFile=args[0];			//2_10_100_4_TRUE_65_50_50.json
+		String outputFile=args[1];			//output.csv
 		
 		Long begin = System.currentTimeMillis();
 		
