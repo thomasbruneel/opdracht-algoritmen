@@ -726,7 +726,7 @@ public class Problem2 {
                 //hoogste state binnen obstakels zoeken
                 CraneState highest = new CraneState(Integer.MIN_VALUE,0,0,null);
                 for (CraneState c: obstacles){
-                    if(c.getT()<lastState.getT()) {
+                    if(c.getT()>lastState.getT()) {
                         highest = c.getX() > highest.getX() ? c : highest;
                     }
                 }
