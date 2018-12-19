@@ -361,7 +361,7 @@ public class Problem2 {
         while (!outputJobSequence.isEmpty() || inputjobIT.hasNext()) {
             //staat bepalen
 
-            if (outputGantry.getTime()>8250){
+            if (inputGantry.getTime()>9500){
                 System.out.println("break");
             }
 
@@ -512,9 +512,8 @@ public class Problem2 {
                                             Slot dummy = new Slot(-666,slot.getCenterX()-(int)safetyDistance,slot.getCenterY(),0,0,0,0,0,null,null);
                                             moveIN(inputGantry,outputGantry, dummy);
                                             inputGantry.moveTo(dummy);
-                                        } else {
-                                            moveOUT(outputGantry,inputGantry,slot);
                                         }
+                                        moveOUT(outputGantry,inputGantry,slot);
                                         outputGantry.moveTo(slot);
                                         outputGantry.pickup(outputItem, pickupPlaceDuration);
                                         itemToSlot.remove(outputItem.getId());
