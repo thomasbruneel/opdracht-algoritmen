@@ -15,8 +15,8 @@
       <file leaf-file-name="Problem2.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/be/kul/gantry/domain/Problem2.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="281">
-              <caret line="734" column="55" lean-forward="true" selection-start-line="734" selection-start-column="55" selection-end-line="734" selection-end-column="55" />
+            <state relative-caret-position="1051">
+              <caret line="717" column="55" lean-forward="true" selection-start-line="717" selection-start-column="55" selection-end-line="717" selection-end-column="55" />
               <folding>
                 <element signature="e#1833#1834#0" expanded="true" />
                 <element signature="e#1860#1861#0" expanded="true" />
@@ -48,8 +48,8 @@
                 <element signature="e#2807#2808#0" expanded="true" />
                 <element signature="method#writeJsonFile#0;class#Problem2#0" expanded="false" />
                 <element signature="method#fromJson#0;class#Problem2#0" expanded="false" />
-                <element signature="e#38523#38524#0" expanded="true" />
-                <element signature="e#38568#38569#0" expanded="true" />
+                <element signature="e#36479#36480#0" expanded="true" />
+                <element signature="e#36524#36525#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -58,8 +58,8 @@
       <file leaf-file-name="output.csv" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/output.csv">
           <provider selected="true" editor-type-id="csv-text-editor">
-            <state relative-caret-position="34">
-              <caret line="335" column="19" lean-forward="true" selection-start-line="335" selection-start-column="19" selection-end-line="335" selection-end-column="19" />
+            <state relative-caret-position="-50">
+              <caret line="331" column="19" lean-forward="true" selection-start-line="331" selection-start-column="19" selection-end-line="331" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -410,7 +410,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32915717" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19362187" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3405467" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -555,7 +555,7 @@
           <caret line="39" column="22" lean-forward="false" selection-start-line="39" selection-start-column="22" selection-end-line="39" selection-end-column="22" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1545042281138" expanded="true" signature="2235:2401" ph="{...}" />
+            <marker date="1545230889216" expanded="true" signature="2446:2612" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -692,7 +692,7 @@
           <caret line="32" column="20" lean-forward="true" selection-start-line="32" selection-start-column="20" selection-end-line="32" selection-end-column="20" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1545042281138" expanded="true" signature="2235:2401" ph="{...}" />
+            <marker date="1545230889216" expanded="true" signature="2446:2612" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -863,7 +863,7 @@
           <caret line="41" column="27" lean-forward="true" selection-start-line="41" selection-start-column="27" selection-end-line="41" selection-end-column="27" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1545042281138" expanded="true" signature="2235:2401" ph="{...}" />
+            <marker date="1545230889216" expanded="true" signature="2446:2612" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -942,8 +942,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/output.csv">
       <provider selected="true" editor-type-id="csv-text-editor">
-        <state relative-caret-position="34">
-          <caret line="335" column="19" lean-forward="true" selection-start-line="335" selection-start-column="19" selection-end-line="335" selection-end-column="19" />
+        <state relative-caret-position="-50">
+          <caret line="331" column="19" lean-forward="true" selection-start-line="331" selection-start-column="19" selection-end-line="331" selection-end-column="19" />
           <folding />
         </state>
       </provider>
@@ -956,8 +956,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/be/kul/gantry/domain/Problem2.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="734" column="55" lean-forward="true" selection-start-line="734" selection-start-column="55" selection-end-line="734" selection-end-column="55" />
+        <state relative-caret-position="1051">
+          <caret line="717" column="55" lean-forward="true" selection-start-line="717" selection-start-column="55" selection-end-line="717" selection-end-column="55" />
           <folding>
             <element signature="e#1833#1834#0" expanded="true" />
             <element signature="e#1860#1861#0" expanded="true" />
@@ -989,8 +989,8 @@
             <element signature="e#2807#2808#0" expanded="true" />
             <element signature="method#writeJsonFile#0;class#Problem2#0" expanded="false" />
             <element signature="method#fromJson#0;class#Problem2#0" expanded="false" />
-            <element signature="e#38523#38524#0" expanded="true" />
-            <element signature="e#38568#38569#0" expanded="true" />
+            <element signature="e#36479#36480#0" expanded="true" />
+            <element signature="e#36524#36525#0" expanded="true" />
           </folding>
         </state>
       </provider>

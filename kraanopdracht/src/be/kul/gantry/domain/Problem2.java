@@ -645,24 +645,17 @@ public class Problem2 {
     public void moveIN(Gantry inputGantry, Gantry outputGantry, Slot s){
         System.out.println("moveIN");
         //relevante states van outputGantry opvragen
-        List<CraneState> outStates = outputGantry.getStates(inputGantry.getTime());
+        List<CraneState> obstacles = outputGantry.getStates(inputGantry.getTime());
         CraneState lastState = inputGantry.getLastCranestate();
         List<CraneState> detour = new ArrayList<>();
 
         while(lastState.getT()<outputGantry.getTime()){
+            System.out.println("loop");
             //Attempt opstellen
             //tijd van huidige toestand naar attempt(rechtstreeks naar slot)
             double attemptTime = Math.max(Math.abs(lastState.getX()-s.getCenterX())/inputGantry.getxSpeed(),Math.abs(lastState.getY()-s.getCenterY())/inputGantry.getYSpeed());
             CraneState attempt = new CraneState(s.getCenterX(),s.getCenterY(),lastState.getT()+attemptTime,inputGantry.getItemInCrane());
 
-            //Relevante outstates verzamelen
-            List<CraneState> obstacles = new ArrayList<>();
-            int relevantIndex = -1;
-            for (CraneState c: outStates){
-                if (c.getT()<attempt.getT()+pickupPlaceDuration) relevantIndex = outStates.indexOf(c);
-            }
-            if(relevantIndex==outStates.size()-1) obstacles = outStates;
-            else obstacles = outStates.subList(0,relevantIndex+2);
 
             //intersection met attemptlijn controleren + extra pickup of droptijd in rekening brengen
             boolean intersection = false;
@@ -678,35 +671,25 @@ public class Problem2 {
                 }
             }
 
-
             //De kraan omleiden/laten wachten om een nieuwe poging te ondernemen
             if(intersection){
-                //Laagste punt in obstakelstates zoeken
-                CraneState lowest = new CraneState(Integer.MAX_VALUE,0,0,null);
-                for (CraneState c: obstacles){
-                    if(c.getT()>lastState.getT()) {
-                        lowest = c.getX() < lowest.getX() ? c : lowest;
-                    }
-                }
-                double detourTime = Math.max(Math.abs(lastState.getX()-(lowest.getX()-safetyDistance))/inputGantry.getxSpeed(),-666); //y moet nie veranderen
+
+                double detourTime = Math.max(Math.abs(lastState.getX()-(crash.getX()-safetyDistance))/inputGantry.getxSpeed(),-666); //y moet nie veranderen
                 //kan mss in 1 move?
 
                 if(11000 > lastState.getT() && lastState.getT() > 8000){
                     System.out.println("break");
                 }
 
-                detour.add(new CraneState(lowest.getX()-(int)safetyDistance,lastState.getY(),lastState.getT()+detourTime,inputGantry.getItemInCrane()));
+                detour.add(new CraneState(crash.getX()-(int)safetyDistance,lastState.getY(),lastState.getT()+detourTime,inputGantry.getItemInCrane()));
 
-                if(lastState.getT()+detourTime < lowest.getT()){
-                    lastState = new CraneState(lowest.getX()-(int)safetyDistance,lastState.getY(),lowest.getT(),inputGantry.getItemInCrane());
+                if(lastState.getT()+detourTime < crash.getT()){
+                    lastState = new CraneState(crash.getX()-(int)safetyDistance,lastState.getY(),crash.getT(),inputGantry.getItemInCrane());
 
                 } else lastState = detour.get(detour.size()-1);
 
                 detour.add(lastState);
-                //laatste item niet verwijderen!
-                if(obstacles.size()!=outStates.size()) {
-                    outStates.removeAll(obstacles.subList(0, obstacles.indexOf(crash)));
-                } else outStates.removeAll(obstacles);
+
             } else {
                 inputGantry.getStates().addAll(detour);
                 inputGantry.setxPosition(lastState.getX());
@@ -728,7 +711,7 @@ public class Problem2 {
     public void moveOUT(Gantry outputGantry, Gantry inputGantry, Slot s){
         System.out.println("moveOUT");
         //relevante states inputgantry opvragen
-        List<CraneState> inStates = inputGantry.getStates(outputGantry.getTime());
+        List<CraneState> obstacles = inputGantry.getStates(outputGantry.getTime());
         CraneState lastState = outputGantry.getLastCranestate();
         List<CraneState> detour = new ArrayList<>();
 
@@ -736,15 +719,6 @@ public class Problem2 {
             //Attempt opstellen
             double attemptTime = Math.max(Math.abs(lastState.getX()-s.getCenterX())/outputGantry.getXSpeed(),Math.abs(lastState.getY()-s.getCenterY())/outputGantry.getYSpeed());
             CraneState attempt = new CraneState(s.getCenterX(),s.getCenterY(),lastState.getT()+attemptTime,outputGantry.getItemInCrane());
-
-            //Relevante instates verzamelen
-            List<CraneState> obstacles = new ArrayList<>();
-            int relevantIndex = -1;
-            for (CraneState c: inStates){
-                if (c.getT()<attempt.getT()+pickupPlaceDuration) relevantIndex = inStates.indexOf(c);
-            }
-            if(relevantIndex==inStates.size()-1) obstacles = inStates;
-            else obstacles = inStates.subList(0,relevantIndex+2);
 
             //intersection met attemptlijn controleren + extra pickup of droptijd in rekening brengen
             boolean intersection = false;
@@ -761,29 +735,19 @@ public class Problem2 {
             }
 
             if(intersection){
-                //hoogste state binnen obstakels zoeken
-                CraneState highest = new CraneState(Integer.MIN_VALUE,0,0,null);
-                for (CraneState c: obstacles){
-                    if(c.getT()>lastState.getT()) {
-                        highest = c.getX() > highest.getX() ? c : highest;
-                    }
-                }
-                double detourTime = Math.max(Math.abs(lastState.getX()-(highest.getX()+safetyDistance))/outputGantry.getxSpeed(),-666);
+
+                double detourTime = Math.max(Math.abs(lastState.getX()-(crash.getX()+safetyDistance))/outputGantry.getxSpeed(),-666);
 
                 if(11000 > lastState.getT() && lastState.getT() > 8000){
                     System.out.println("break");
                 }
 
                 //kan mss in 1 move?
-                detour.add(new CraneState(highest.getX()+(int)safetyDistance,lastState.getY(),lastState.getT()+detourTime,outputGantry.getItemInCrane()));
-                if(!(highest.getT()<lastState.getT()+detourTime)) {
-                    lastState = new CraneState(highest.getX() + (int) safetyDistance, lastState.getY(), highest.getT(), outputGantry.getItemInCrane());
+                detour.add(new CraneState(crash.getX()+(int)safetyDistance,lastState.getY(),lastState.getT()+detourTime,outputGantry.getItemInCrane()));
+                if(!(crash.getT()<lastState.getT()+detourTime)) {
+                    lastState = new CraneState(crash.getX() + (int) safetyDistance, lastState.getY(), crash.getT(), outputGantry.getItemInCrane());
                 } else lastState = detour.get(detour.size()-1);
                 detour.add(lastState);
-                //laatste item niet verwijderen!
-                if(obstacles.size()!=inStates.size()) {
-                    inStates.removeAll(obstacles.subList(0, obstacles.indexOf(crash)));
-                } else inStates.removeAll(obstacles);
             } else {
                 outputGantry.getStates().addAll(detour);
                 outputGantry.setxPosition(lastState.getX());
