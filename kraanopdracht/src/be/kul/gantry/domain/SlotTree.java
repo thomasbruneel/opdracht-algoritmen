@@ -1,7 +1,9 @@
 package be.kul.gantry.domain;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SlotTree {
 
@@ -42,14 +44,18 @@ public class SlotTree {
     	for(Slot s:sloten){
     		sloten2.add(s);
     	}
-    	
     	if(sloten.size()!=0){
     		for(Slot s:sloten){
     			findOverlappingInterval(s.getXMin(),s.getXMax(),s.getZ(),sloten2,root);
     		}
     	}
-    	sloten.sort(new SlotHeightComparator());
-        return sloten;
+    	
+    	Set<Slot> set = new LinkedHashSet<Slot>(sloten2);	//remove duplicates
+    	ArrayList<Slot> overLappingSlots= new ArrayList<>();
+    	for(Slot s:set){
+    		overLappingSlots.add(s);
+    	}
+        return overLappingSlots;
     }
     
 	private void findOverlappingInterval(int xMin, int xMax, int z, List<Slot> sloten, Node n) {
