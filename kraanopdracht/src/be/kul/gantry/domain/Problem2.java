@@ -472,9 +472,15 @@ public class Problem2 {
                                 if (slot != null) {            //als slot leeg is, eerst inputjobs doen
                                     overlappingSlots = rows.get(slot.getCenterY()).findOverlapping(slot.getXMin(), slot.getXMax(), slot.getZ());
                                     if (overlappingSlots.isEmpty()) {
-                                        moveOUT(outputGantry,inputGantry,slot);
+
+                                        if(inputGantry.getxPosition() > slot.getCenterX()-(int) safetyDistance && inputGantry.getTime() < outputGantry.getTime()){
+                                            inputGantry.moveAway(slot.getCenterX()-(int) safetyDistance);
+                                        } else {
+                                            moveOUT(outputGantry,inputGantry,slot);
+                                        }
                                         outputGantry.moveTo(slot);
                                         outputGantry.pickup(outputItem, pickupPlaceDuration);
+                                        inputGantry.stayIdle(outputGantry.getTime());
                                         outputGantry.moveTo(outputslot);
                                         outputGantry.drop(pickupPlaceDuration);
 
@@ -497,21 +503,29 @@ public class Problem2 {
                 	if(inputjobIT.hasNext()){
                 		Job job=inputjobIT.next();
                     	Item inputItem=job.getItem();
-                    	
+
                     	inputGantry.moveTo(inputslot);
                     	inputGantry.pickup(inputItem, pickupPlaceDuration);
                     	
                     	if(!it.hasNext()) it = rows.keySet().iterator();
                         Slot leegSlot = rows.get(it.next()).getEmptySlot();
-                        moveIN(inputGantry,outputGantry,leegSlot);
+
+                        if(outputGantry.getxPosition() < leegSlot.getCenterX()+(int) safetyDistance && inputGantry.getTime() > outputGantry.getTime()){
+                            outputGantry.moveAway(leegSlot.getCenterX()+(int) safetyDistance);
+                        } else {
+                            moveIN(inputGantry,outputGantry,leegSlot);
+                        }
                     	inputGantry.moveTo(leegSlot);       //TODO: move_priority_IN
                     	
                     	inputGantry.drop(pickupPlaceDuration);
-                    	
+
+                    	outputGantry.stayIdle(inputGantry.getLastCranestate().getT());
+
                         leegSlot.setItem(inputItem);
                         itemToSlot.put(inputItem.getId(),leegSlot);
-                        if(outputItem.getId()==inputItem.getId()) slot = itemToSlot.get(outputItem.getId());
-                        outputGantry.start(inputGantry.getTime());
+                        if(outputItem.getId()==inputItem.getId()){
+                            slot = itemToSlot.get(outputItem.getId());
+                        }
                 	}
 
 
@@ -666,8 +680,13 @@ public class Problem2 {
                 }
                 double detourTime = Math.max(Math.abs(lastState.getX()-(lowest.getX()-safetyDistance))/inputGantry.getxSpeed(),-666); //y moet nie veranderen
                 //kan mss in 1 move?
-                detour.add(new CraneState(lowest.getX()-(int)safetyDistance,lastState.getY(),lastState.getT()+detourTime,lastState.getItem()));
-                lastState = new CraneState(lowest.getX()-(int)safetyDistance,lastState.getY(),lowest.getT(),lastState.getItem());
+
+                if(15000 > lastState.getT() && lastState.getT() > 14000){
+                    System.out.println("break");
+                }
+
+                detour.add(new CraneState(lowest.getX()-(int)safetyDistance,lastState.getY(),lastState.getT()+detourTime,inputGantry.getItemInCrane()));
+                lastState = new CraneState(lowest.getX()-(int)safetyDistance,lastState.getY(),lowest.getT(),inputGantry.getItemInCrane());
                 detour.add(lastState);
                 //laatste item niet verwijderen!
                 if(obstacles.size()!=outStates.size()) {
@@ -701,7 +720,7 @@ public class Problem2 {
         while(!inStates.isEmpty()){
             //Attempt opstellen
             double attemptTime = Math.max(Math.abs(lastState.getX()-s.getCenterX())/outputGantry.getXSpeed(),Math.abs(lastState.getY()-s.getCenterY())/outputGantry.getYSpeed());
-            CraneState attempt = new CraneState(s.getCenterX(),s.getCenterY(),lastState.getT()+attemptTime,lastState.getItem());
+            CraneState attempt = new CraneState(s.getCenterX(),s.getCenterY(),lastState.getT()+attemptTime,outputGantry.getItemInCrane());
 
             //Relevante instates verzamelen
             List<CraneState> obstacles = new ArrayList<>();
@@ -732,8 +751,8 @@ public class Problem2 {
                 }
                 double detourTime = Math.max(Math.abs(lastState.getX()-(highest.getX()+safetyDistance))/outputGantry.getxSpeed(),-666);
                 //kan mss in 1 move?
-                detour.add(new CraneState(highest.getX()+(int)safetyDistance,lastState.getY(),lastState.getT()+detourTime,lastState.getItem()));
-                lastState = new CraneState(highest.getX()+(int)safetyDistance,lastState.getY(),highest.getT(),lastState.getItem());
+                detour.add(new CraneState(highest.getX()+(int)safetyDistance,lastState.getY(),lastState.getT()+detourTime,outputGantry.getItemInCrane()));
+                lastState = new CraneState(highest.getX()+(int)safetyDistance,lastState.getY(),highest.getT(),outputGantry.getItemInCrane());
                 detour.add(lastState);
                 //laatste item niet verwijderen!
                 if(obstacles.size()!=inStates.size()) {

@@ -192,6 +192,9 @@ public class Gantry {
         double time_past = Math.max(Math.abs(xPosition-slot.getCenterX())/xSpeed,Math.abs(yPostion-slot.getCenterY())/ySpeed);
         states.add(new CraneState(slot.getCenterX(),slot.getCenterY(),states.get(states.size()-1).getT()+time_past,itemInCrane));
         time = time+time_past;
+        if(time>14100){
+            System.out.println("break");
+        }
         xPosition = slot.getCenterX();
         yPostion = slot.getCenterY();
     }
@@ -210,5 +213,17 @@ public class Gantry {
 
     public CraneState getLastCranestate() {
         return states.get(states.size()-1);
+    }
+
+    public void moveAway(int x) {
+        double timeToTravel = Math.abs(xPosition-x)/xSpeed;
+        time+=timeToTravel;
+        states.add(new CraneState(x,yPostion,time,itemInCrane));
+        xPosition = x;
+    }
+
+    public void stayIdle(double t) {
+        time=t;
+        states.add(new CraneState(xPosition,yPostion,time,itemInCrane));
     }
 }
