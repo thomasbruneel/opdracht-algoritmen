@@ -16,10 +16,20 @@ public class Main {
 		
 		Long begin = System.currentTimeMillis();
 		
-		Problem2 p = Problem2.fromJson(new File(inputFile));
-		//1 of 2 kranencheck
-        System.out.println("Start solve");
-        ArrayList<Move> solution = p.solve();
+		Problem1 p1 = Problem1.fromJson(new File(inputFile));
+		Problem2 p2 = Problem2.fromJson(new File(inputFile));
+
+		System.out.println("Start solve");
+		ArrayList<Move> solution=new ArrayList<Move>();
+		if(p2.getGantries().size()==1){
+			System.out.println("1 kraan");
+			solution=p1.solve();
+		}
+		else{
+			System.out.println("2 kranen");
+			solution=p2.solve();
+		}
+        
 		BufferedWriter bw=new BufferedWriter(new FileWriter(outputFile));
 		bw.write("\"gID\";\"T\";\"x\";\"y\";\"itemInCraneID\"");
         try {
