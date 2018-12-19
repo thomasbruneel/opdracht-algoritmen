@@ -344,21 +344,21 @@ public class Problem2 {
 
         Iterator<Integer> it = rows.keySet().iterator();
 
-        Iterator<Job> outputjobIT = outputJobSequence.iterator();
+
         Iterator<Job> inputjobIT = inputJobSequence.iterator();
 
 
         int inputIndex=0;
 
         //assume: !outputjobList.isEmpty()
-        Job outputJob = outputjobIT.next();
+        Job outputJob = outputJobSequence.get(0);
         Item outputItem = outputJob.getItem();
         Slot slot = itemToSlot.get(outputItem.getId());
         ArrayList<Slot> overlappingSlots = new ArrayList<>();
 
         Slot buried_slot = null;
         //voldoende voorwaarde?
-        while (outputjobIT.hasNext() || inputjobIT.hasNext()) {
+        while (!outputJobSequence.isEmpty() || inputjobIT.hasNext()) {
             //staat bepalen
 
             if (outputGantry.getTime()>8250){
@@ -421,13 +421,14 @@ public class Problem2 {
 
                 outputGantry.drop(pickupPlaceDuration);
 
+                outputJobSequence.remove(outputJob);
                 outputJob = null;
                 outputItem = null;
                 buried_slot = null;
 
                 System.out.println("Overlapping gedaan");
             } else {
-                if (outputjobIT.hasNext() && slot != null) {
+                if (!outputJobSequence.isEmpty() && slot != null) {
                     if (inputjobIT.hasNext()) {
                         //STAAT: SIMULTAAN IN EN OUT
                         //while(!overlappingSlots.isEmpty() && outputjobIT.hasNext() && inputjobIT.hasNext() && geenOnbestaandItem)
@@ -460,7 +461,7 @@ public class Problem2 {
                     	
                     	else{
                     	    if(outputItem == null) {
-                                outputJob = outputjobIT.next();
+                                outputJob = outputJobSequence.get(0);
                                 outputItem = outputJob.getItem();
                             }
                             slot=itemToSlot.get(outputItem.getId());
@@ -475,7 +476,8 @@ public class Problem2 {
                                    	outputGantry.moveTo(outputslot);
 
                                    	outputGantry.drop(pickupPlaceDuration);
-                                    	
+
+                                   	outputJobSequence.remove(outputJob);
                                    	outputJob=null;
                                    	outputItem=null;
 
@@ -488,7 +490,7 @@ public class Problem2 {
 
                     	}
                     } else {
-                        while(overlappingSlots.isEmpty() && outputjobIT.hasNext()) {
+                        while(overlappingSlots.isEmpty() && !outputJobSequence.isEmpty()) {
                             //TODO: enkel output -> move priorityOUT
 
                             if(outputGantry.getTime()>20500){
@@ -496,7 +498,7 @@ public class Problem2 {
                             }
 
                             if(outputItem == null) {
-                                outputJob = outputjobIT.next();
+                                outputJob = outputJobSequence.get(0);
                                 outputItem = outputJob.getItem();
                             } else {
                                 outputItem = outputJob.getItem();
@@ -523,7 +525,7 @@ public class Problem2 {
                                         outputGantry.moveTo(outputslot);
                                         outputGantry.drop(pickupPlaceDuration);
 
-
+                                        outputJobSequence.remove(outputJob);
                                         outputJob = null;
                                         outputItem = null;
                                     } else {
