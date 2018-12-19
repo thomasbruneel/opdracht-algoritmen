@@ -385,6 +385,9 @@ public class Problem2 {
                         Slot leegSlot = rows.get(it.next()).getEmptySlot();
                         moveIN(inputGantry,outputGantry,leegSlot);
                         inputGantry.moveTo(leegSlot);
+
+                        leegSlot.setItem(inputGantry.getItemInCrane());
+                        itemToSlot.put(inputGantry.getItemInCrane().getId(),leegSlot);
                         inputGantry.drop(pickupPlaceDuration);
                     } else {
                         moveOUT(outputGantry,inputGantry,slot_blocking);
@@ -397,6 +400,9 @@ public class Problem2 {
                         Slot leegSlot = rows.get(it.next()).getEmptySlot();
                         moveOUT(outputGantry,inputGantry,leegSlot);
                         outputGantry.moveTo(leegSlot);
+
+                        leegSlot.setItem(outputGantry.getItemInCrane());
+                        itemToSlot.put(outputGantry.getItemInCrane().getId(),leegSlot);
                         outputGantry.drop(pickupPlaceDuration);
                     }
                 }
@@ -406,6 +412,7 @@ public class Problem2 {
                 itemToSlot.remove(buried_slot.getItem().getId());
                 buried_slot.setItem(null);
                 outputGantry.moveTo(outputslot);
+
                 outputGantry.drop(pickupPlaceDuration);
 
                 outputJob = null;
@@ -433,7 +440,9 @@ public class Problem2 {
 
                             moveIN(inputGantry,outputGantry,leegSlot);
                         	inputGantry.moveTo(leegSlot);
-                        	
+
+                            leegSlot.setItem(inputGantry.getItemInCrane());
+                            itemToSlot.put(inputGantry.getItemInCrane().getId(),leegSlot);
                         	inputGantry.drop(pickupPlaceDuration);
                         	
                             leegSlot.setItem(inputItem);
@@ -455,7 +464,10 @@ public class Problem2 {
                                		moveOUT(outputGantry,inputGantry,slot);
                                		outputGantry.moveTo(slot);
                                    	outputGantry.pickup(outputItem, pickupPlaceDuration);
+                                   	itemToSlot.remove(outputItem.getId());
+                                   	slot.setItem(null);
                                    	outputGantry.moveTo(outputslot);
+
                                    	outputGantry.drop(pickupPlaceDuration);
                                     	
                                    	outputJob=null;
@@ -472,6 +484,11 @@ public class Problem2 {
                     } else {
                         while(overlappingSlots.isEmpty() && outputjobIT.hasNext()) {
                             //TODO: enkel output -> move priorityOUT
+
+                            if(outputGantry.getTime()>20500){
+                                System.out.println("break");
+                            }
+
                             if(outputItem == null) {
                                 outputJob = outputjobIT.next();
                                 outputItem = outputJob.getItem();
@@ -492,11 +509,14 @@ public class Problem2 {
                                         }
                                         outputGantry.moveTo(slot);
                                         outputGantry.pickup(outputItem, pickupPlaceDuration);
+                                        itemToSlot.remove(outputItem.getId());
+                                        slot.setItem(null);
                                         if(inputGantry.getTime()<outputGantry.getTime()){
                                             inputGantry.stayIdle(outputGantry.getTime());
                                         }
                                         outputGantry.moveTo(outputslot);
                                         outputGantry.drop(pickupPlaceDuration);
+
 
                                         outputJob = null;
                                         outputItem = null;
@@ -530,7 +550,9 @@ public class Problem2 {
                             moveIN(inputGantry,outputGantry,leegSlot);
                         }
                     	inputGantry.moveTo(leegSlot);       //TODO: move_priority_IN
-                    	
+
+                        leegSlot.setItem(inputGantry.getItemInCrane());
+                        itemToSlot.put(inputGantry.getItemInCrane().getId(),leegSlot);
                     	inputGantry.drop(pickupPlaceDuration);
 
                     	outputGantry.stayIdle(inputGantry.getLastCranestate().getT());
@@ -592,11 +614,16 @@ public class Problem2 {
                     System.out.println("break");
                 }
 
+                lastState = new CraneState(crash.getX()-(int)safetyDistance,crash.getY(),Math.max(lastState.getT()+detourTime,crash.getT()),inputGantry.getItemInCrane());
+
+
                 //kan mss in 1 move?
+                /*
                 detour.add(new CraneState(crash.getX() - (int)safetyDistance,lastState.getY(),lastState.getT()+detourTime,inputGantry.getItemInCrane()));
                 if(!(crash.getT()<lastState.getT()+detourTime)) {
                     lastState = new CraneState(crash.getX() - (int) safetyDistance, lastState.getY(), crash.getT(), inputGantry.getItemInCrane());
                 } else lastState = detour.get(detour.size()-1);
+                */
                 detour.add(lastState);
             } else {
                 inputGantry.getStates().addAll(detour);
@@ -651,11 +678,15 @@ public class Problem2 {
                     System.out.println("break");
                 }
 
+                lastState = new CraneState(crash.getX()+(int)safetyDistance,crash.getY(),Math.max(lastState.getT()+detourTime,crash.getT()),outputGantry.getItemInCrane());
+
                 //kan mss in 1 move?
-                detour.add(new CraneState(crash.getX()+(int)safetyDistance,lastState.getY(),lastState.getT()+detourTime,outputGantry.getItemInCrane()));
+                /*
+                detour.add(new CraneState(crash.getX()+(int)safetyDistance,crash.getY(),lastState.getT()+detourTime,outputGantry.getItemInCrane()));
                 if(!(crash.getT()<lastState.getT()+detourTime)) {
                     lastState = new CraneState(crash.getX() + (int) safetyDistance, lastState.getY(), crash.getT(), outputGantry.getItemInCrane());
                 } else lastState = detour.get(detour.size()-1);
+                */
                 detour.add(lastState);
             } else {
                 outputGantry.getStates().addAll(detour);

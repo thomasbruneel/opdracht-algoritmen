@@ -69,7 +69,7 @@ public class GuiMain2 extends Application {
             public void handle(ActionEvent event) {
                 final NumberAxis xAxis = (NumberAxis)chart.getXAxis();
                 xAxis.setLowerBound(0);
-                xAxis.setUpperBound(20000);
+                xAxis.setUpperBound(30000);
                 final NumberAxis yAxis = (NumberAxis)chart.getYAxis();
                 yAxis.setLowerBound(0);
                 yAxis.setUpperBound(1100);
@@ -105,7 +105,7 @@ public class GuiMain2 extends Application {
 	}
 
     private NumberAxis createXAxis() {
-        final NumberAxis xAxis = new NumberAxis(0,20000,200);
+        final NumberAxis xAxis = new NumberAxis(0,30000,200);
 	    xAxis.setAutoRanging(false);
 	    //xAxis.setLowerBound(0);
 	    //xAxis.setUpperBound(20000);
