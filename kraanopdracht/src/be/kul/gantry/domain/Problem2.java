@@ -381,8 +381,11 @@ public class Problem2 {
                         itemToSlot.remove(slot_blocking.getItem().getId());
                         slot_blocking.setItem(null);
                         //Bestemming nieuw item bepalen
-                        if (!it.hasNext()) it = rows.keySet().iterator();
-                        Slot leegSlot = rows.get(it.next()).getEmptySlot();
+                        Slot leegSlot = new Slot(-1,-1,slot_blocking.getCenterY(),-1,-1,-1,-1,-1,null,null);
+                        while(leegSlot.getCenterY()==slot_blocking.getCenterY()) {
+                            if (!it.hasNext()) it = rows.keySet().iterator();
+                            leegSlot = rows.get(it.next()).getEmptySlot();
+                        }
                         moveIN(inputGantry,outputGantry,leegSlot);
                         inputGantry.moveTo(leegSlot);
 
@@ -396,8 +399,11 @@ public class Problem2 {
                         itemToSlot.remove(slot_blocking.getItem().getId());
                         slot_blocking.setItem(null);
                         //Bestemming nieuw item bepalen
-                        if (!it.hasNext()) it = rows.keySet().iterator();
-                        Slot leegSlot = rows.get(it.next()).getEmptySlot();
+                        Slot leegSlot = new Slot(-1,-1,slot_blocking.getCenterY(),-1,-1,-1,-1,-1,null,null);
+                        while(leegSlot.getCenterY()==slot_blocking.getCenterY()) {
+                            if (!it.hasNext()) it = rows.keySet().iterator();
+                            leegSlot = rows.get(it.next()).getEmptySlot();
+                        }
                         moveOUT(outputGantry,inputGantry,leegSlot);
                         outputGantry.moveTo(leegSlot);
 
