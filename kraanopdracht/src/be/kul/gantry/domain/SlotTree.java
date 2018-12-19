@@ -39,24 +39,21 @@ public class SlotTree {
     public ArrayList<Slot> findOverlapping(int xMin, int xMax,int z) {
     	ArrayList<Slot> sloten= new ArrayList<>();
     	findOverlappingInterval(xMin,xMax,z,sloten,root);
-    	
+
     	ArrayList<Slot> sloten2= new ArrayList<>();
-    	for(Slot s:sloten){
-    		sloten2.add(s);
-    	}
     	if(sloten.size()!=0){
     		for(Slot s:sloten){
-    			findOverlappingInterval(s.getXMin(),s.getXMax(),s.getZ(),sloten2,root);
+    			sloten2.addAll(findOverlapping(s.getXMin(),s.getXMax(),s.getZ()));
     		}
     	}
-    	
-    	Set<Slot> set = new LinkedHashSet<Slot>(sloten2);	//remove duplicates
-    	ArrayList<Slot> overLappingSlots= new ArrayList<>();
-    	for(Slot s:set){
-    		overLappingSlots.add(s);
-    	}
-    	overLappingSlots.sort(new SlotHeightComparator());
-        return overLappingSlots;
+
+    	for (Slot s : sloten2){
+    	    if(!sloten.contains(s)) sloten.add(s);
+        }
+
+    	sloten.sort(new SlotHeightComparator());
+
+        return sloten;
     }
     
 	private void findOverlappingInterval(int xMin, int xMax, int z, List<Slot> sloten, Node n) {
