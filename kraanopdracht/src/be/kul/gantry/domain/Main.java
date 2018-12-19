@@ -17,6 +17,7 @@ public class Main {
 		Long begin = System.currentTimeMillis();
 		
 		Problem2 p = Problem2.fromJson(new File(inputFile));
+		//1 of 2 kranencheck
         System.out.println("Start solve");
         ArrayList<Move> solution = p.solve();
 		BufferedWriter bw=new BufferedWriter(new FileWriter(outputFile));

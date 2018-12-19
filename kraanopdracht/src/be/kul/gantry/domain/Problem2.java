@@ -360,6 +360,12 @@ public class Problem2 {
         //voldoende voorwaarde?
         while (outputjobIT.hasNext() || inputjobIT.hasNext()) {
             //staat bepalen
+
+            if (inputGantry.getTime()>7500){
+                System.out.println("break");
+            }
+
+
             if (!overlappingSlots.isEmpty()) {
                 //STAAT: Uitgraven
                 while(!overlappingSlots.isEmpty()){
@@ -473,7 +479,7 @@ public class Problem2 {
                                     overlappingSlots = rows.get(slot.getCenterY()).findOverlapping(slot.getXMin(), slot.getXMax(), slot.getZ());
                                     if (overlappingSlots.isEmpty()) {
 
-                                        if(inputGantry.getxPosition() > slot.getCenterX()-(int) safetyDistance && inputGantry.getTime() < outputGantry.getTime()){
+                                        if(inputGantry.getxPosition() > slot.getCenterX()-(int) safetyDistance || inputGantry.getTime() < outputGantry.getTime()){
                                             inputGantry.moveAway(slot.getCenterX()-(int) safetyDistance);
                                         } else {
                                             moveOUT(outputGantry,inputGantry,slot);
@@ -643,7 +649,7 @@ public class Problem2 {
         CraneState lastState = inputGantry.getLastCranestate();
         List<CraneState> detour = new ArrayList<>();
 
-        while(!outStates.isEmpty()){
+        while(lastState.getT()<outputGantry.getTime()){
             //Attempt opstellen
             //tijd van huidige toestand naar attempt(rechtstreeks naar slot)
             double attemptTime = Math.max(Math.abs(lastState.getX()-s.getCenterX())/inputGantry.getxSpeed(),Math.abs(lastState.getY()-s.getCenterY())/inputGantry.getYSpeed());
@@ -663,9 +669,13 @@ public class Problem2 {
             Line2D attemptLine = new Line2D.Double(new Point2D.Double(lastState.getX(),lastState.getT()),new Point2D.Double(attempt.getX(),attempt.getT()));
             Line2D pickDropLine = new Line2D.Double(new Point2D.Double(attempt.getX(),attempt.getT()),new Point2D.Double(attempt.getX(),attempt.getT()+pickupPlaceDuration));
 
+            CraneState crash = null;
             for (int i=0; i<obstacles.size()-1 && !intersection; i++){   //SAFETYDISTANCE!!!
                 Line2D obstacleLine = new Line2D.Double(new Point2D.Double(obstacles.get(i).getX()-safetyDistance,obstacles.get(i).getT()),new Point2D.Double(obstacles.get(i+1).getX()-safetyDistance,obstacles.get(i+1).getT()));
-                if(attemptLine.intersectsLine(obstacleLine) || pickDropLine.intersectsLine(obstacleLine)) intersection = true;
+                if(attemptLine.intersectsLine(obstacleLine) || pickDropLine.intersectsLine(obstacleLine)) {
+                    intersection = true;
+                    crash = obstacles.get(i+1);
+                }
             }
 
 
@@ -695,7 +705,7 @@ public class Problem2 {
                 detour.add(lastState);
                 //laatste item niet verwijderen!
                 if(obstacles.size()!=outStates.size()) {
-                    outStates.removeAll(obstacles.subList(0, obstacles.size() - 1));
+                    outStates.removeAll(obstacles.subList(0, obstacles.indexOf(crash)));
                 } else outStates.removeAll(obstacles);
             } else {
                 inputGantry.getStates().addAll(detour);
@@ -722,7 +732,7 @@ public class Problem2 {
         CraneState lastState = outputGantry.getLastCranestate();
         List<CraneState> detour = new ArrayList<>();
 
-        while(!inStates.isEmpty()){
+        while(lastState.getT()<outputGantry.getTime()){
             //Attempt opstellen
             double attemptTime = Math.max(Math.abs(lastState.getX()-s.getCenterX())/outputGantry.getXSpeed(),Math.abs(lastState.getY()-s.getCenterY())/outputGantry.getYSpeed());
             CraneState attempt = new CraneState(s.getCenterX(),s.getCenterY(),lastState.getT()+attemptTime,outputGantry.getItemInCrane());
@@ -741,9 +751,13 @@ public class Problem2 {
             Line2D attemptLine = new Line2D.Double(new Point2D.Double(lastState.getX(),lastState.getT()),new Point2D.Double(attempt.getX(),attempt.getT()));
             Line2D pickDropLine = new Line2D.Double(new Point2D.Double(attempt.getX(),attempt.getT()),new Point2D.Double(attempt.getX(),attempt.getT()+pickupPlaceDuration));
 
+            CraneState crash = null;
             for (int i=0; i<obstacles.size()-1 && !intersection; i++){   //SAFETYDISTANCE!!!
                 Line2D obstacleLine = new Line2D.Double(new Point2D.Double(obstacles.get(i).getX()+safetyDistance,obstacles.get(i).getT()),new Point2D.Double(obstacles.get(i+1).getX()+safetyDistance,obstacles.get(i+1).getT()));
-                if(attemptLine.intersectsLine(obstacleLine) || pickDropLine.intersectsLine(obstacleLine)) intersection = true;
+                if(attemptLine.intersectsLine(obstacleLine) || pickDropLine.intersectsLine(obstacleLine)) {
+                    intersection = true;
+                    crash = obstacles.get(i+1);
+                }
             }
 
             if(intersection){
@@ -768,7 +782,7 @@ public class Problem2 {
                 detour.add(lastState);
                 //laatste item niet verwijderen!
                 if(obstacles.size()!=inStates.size()) {
-                    inStates.removeAll(obstacles.subList(0, obstacles.size() - 1));
+                    inStates.removeAll(obstacles.subList(0, obstacles.indexOf(crash)));
                 } else inStates.removeAll(obstacles);
             } else {
                 outputGantry.getStates().addAll(detour);
